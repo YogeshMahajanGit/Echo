@@ -1,10 +1,18 @@
 import Title from "../shared/Title";
+import ChatList from "../specific/ChatList";
 import Header from "./Header";
 import { Grid } from "@mui/material";
+import { chatSample } from "../constants/sampleData";
+import { useParams } from "react-router-dom";
+const params = useParams();
 
 /* eslint-disable react/display-name */
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
+    const chatId = params.chatId;
+
+    function handleDeleteChat(e, _id, groupChat) {}
+
     return (
       <>
         <Title />
@@ -19,7 +27,11 @@ const AppLayout = () => (WrappedComponent) => {
               display: { xs: "none", sm: "block" },
             }}
           >
-            first
+            <ChatList
+              chats={chatSample}
+              chatId={chatId}
+              handleDeleteChat={handleDeleteChat}
+            />
           </Grid>
           <Grid xs={12} sm={8} md={5} lg={6} height={"100%"} bgcolor={"purple"}>
             <WrappedComponent {...props} />
