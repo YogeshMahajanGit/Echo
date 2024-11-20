@@ -1,5 +1,7 @@
+import AppLayout from "../components/layout/AppLayout";
+
 function ChatPage() {
   return <div>ChatPage ChatPage</div>;
 }
 
-export default ChatPage;
+export default AppLayout()(ChatPage);
