@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute";
 
@@ -14,23 +14,25 @@ let user = true;
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<ProtectRoute user={user} />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/chat:chatId" element={<Chat />} />
-          <Route path="/group" element={<Group />} />
-        </Route>
+      <Suspense fallback={<h5>Login...</h5>}>
+        <Routes>
+          <Route element={<ProtectRoute user={user} />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/chat:chatId" element={<Chat />} />
+            <Route path="/groups" element={<Group />} />
+          </Route>
 
-        <Route
-          path="/login"
-          element={
-            <ProtectRoute user={!user} redirect="/">
-              <Login />
-            </ProtectRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route
+            path="/login"
+            element={
+              <ProtectRoute user={!user} redirect="/">
+                <Login />
+              </ProtectRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
