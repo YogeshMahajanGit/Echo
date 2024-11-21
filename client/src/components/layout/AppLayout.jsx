@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -15,7 +15,7 @@ const AppLayout = () => {
         const params = useParams();
         const chatId = params.chatId;
 
-        const handleDeleteChat = React.useCallback((e, _id, groupChat) => {
+        const handleDeleteChat = useCallback((e, _id, groupChat) => {
           // delete logic
           console.log("Deleting chat:", _id, groupChat);
         }, []);
@@ -47,7 +47,7 @@ const AppLayout = () => {
                 md={5}
                 lg={6}
                 height={"100%"}
-                bgcolor={"purple"}
+                sx={{ border: "1px solid red" }}
               >
                 <WrappedComponent {...props} />
               </Grid>
