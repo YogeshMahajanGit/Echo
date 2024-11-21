@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Avatar, AvatarGroup, Box, Stack } from "@mui/material";
+import { transformImage } from "../../lib/features";
 
 function AvatarCard({ avatar = [], max = 4 }) {
   return (
@@ -9,7 +10,7 @@ function AvatarCard({ avatar = [], max = 4 }) {
           {avatar.map((src, index) => (
             <Avatar
               key={Math.random() * 120}
-              src={src}
+              src={transformImage(src)}
               alt={`Avatar ${index}`}
               style={{
                 width: "2rem",
