@@ -1,5 +1,60 @@
+import {
+  Dialog,
+  DialogTitle,
+  InputAdornment,
+  List,
+  Stack,
+  TextField,
+} from "@mui/material";
+// import { userInputValidation } from "6pp";
+import { Search as SearchIcon } from "@mui/icons-material";
+import UserItem from "../shared/UserItem";
+import { useState } from "react";
+import { sampleUsers } from "../constants/sampleData";
+
 function Search() {
-  return <div>Search Search</div>;
+  const [users, setUsers] = useState(sampleUsers);
+  // const searchValue = userInputValidation("");
+
+  let isLoadingSendfriendRequest = false;
+
+  function handlerAddFriend(id) {
+    console.log(id);
+  }
+
+  return (
+    <Dialog open>
+      <Stack padding={"2rem"} direction={"column"} width={"25rem"}>
+        <DialogTitle textAlign={"center"}>Find People</DialogTitle>
+        <TextField
+          label=""
+          // value={searchValue.value}
+          // onChange={searchValue.changeHandler}
+          variant="outlined"
+          size="small"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+        <List>
+          {users.map((user) => (
+            <UserItem
+              key={user._id}
+              user={user}
+              handler={handlerAddFriend}
+              handlerIsLoading={isLoadingSendfriendRequest}
+            />
+          ))}
+        </List>
+      </Stack>
+    </Dialog>
+  );
 }
 
 export default Search;

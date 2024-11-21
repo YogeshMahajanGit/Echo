@@ -14,3 +14,16 @@ export const chatSample = [
     members: ["1", "2"],
   },
 ];
+
+export const sampleUsers = [
+  {
+    avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+    name: "John Doe",
+    _id: "1",
+  },
+  {
+    avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+    name: "John Doe",
+    _id: "2",
+  },
+];
