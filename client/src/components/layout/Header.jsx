@@ -35,7 +35,9 @@ function Header() {
   function handleOpenSearchDialog() {
     setIsSearch((prev) => !prev);
   }
-  function handleOpenNewGroup() {}
+  function handleOpenNewGroup() {
+    setIsNewGroup((prev) => !prev);
+  }
 
   function handleNotifications() {
     setIsNotification((prev) => !prev);
@@ -87,7 +89,7 @@ function Header() {
                 onClick={handleOpenNewGroup}
               />
               <IconBtn
-                title={"Manahe Groups"}
+                title={"Manage Groups"}
                 icon={<Group />}
                 onClick={handleNaviagteGroup}
               />
@@ -121,13 +123,13 @@ function Header() {
         </Suspense>
       )}
       {isNotification && (
-        <Suspense fallback={<h1>LODDD..</h1>}>
+        <Suspense fallback={<Backdrop open />}>
           <NotificationDialog />
         </Suspense>
       )}
 
       {isNewGroup && (
-        <Suspense fallback={<h1>LODDD..</h1>}>
+        <Suspense fallback={<Backdrop open />}>
           <NewGroupDialog />
         </Suspense>
       )}

@@ -9,7 +9,9 @@ function Notification() {
   return (
     <Dialog open>
       <Stack padding={{ xs: "1rem", sm: "2rem" }} maxWidth={"35rem"}>
-        <DialogTitle textAlign={"center"}>Notification</DialogTitle>
+        <DialogTitle variant="h5" textAlign={"center"}>
+          Notification
+        </DialogTitle>
         {sampleNotifi.length > 0 ? (
           sampleNotifi.map((i, index) => (
             <NotificationItem
