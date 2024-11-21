@@ -3,13 +3,14 @@ import ChatList from "../specific/ChatList";
 import Header from "./Header";
 import { Grid } from "@mui/material";
 import { chatSample } from "../constants/sampleData";
-import { useParams } from "react-router-dom";
-const params = useParams();
+import Profile from "../specific/Profile";
+// import { useParams } from "react-router-dom";
+// const params = useParams();
 
 /* eslint-disable react/display-name */
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
-    const chatId = params.chatId;
+    // const chatId = params.chatId;
 
     function handleDeleteChat(e, _id, groupChat) {}
 
@@ -29,7 +30,7 @@ const AppLayout = () => (WrappedComponent) => {
           >
             <ChatList
               chats={chatSample}
-              chatId={chatId}
+              // chatId={chatId}
               handleDeleteChat={handleDeleteChat}
             />
           </Grid>
@@ -43,10 +44,9 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: { xs: "none", md: "block" },
               padding: "2rem",
-              bgcolor: "gray",
             }}
           >
-            Third
+            <Profile />
           </Grid>
         </Grid>
       </>
