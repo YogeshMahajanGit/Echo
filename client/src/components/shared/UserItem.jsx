@@ -18,6 +18,9 @@ function UserItem({ user, handler, handlerIsLoading }) {
         marginBottom: "10px",
         borderRadius: "5px",
         cursor: "pointer",
+        ":hover": {
+          bgcolor: "#0001",
+        },
       }}
     >
       <ListItem>

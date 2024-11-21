@@ -36,7 +36,11 @@ function Header() {
     setIsSearch((prev) => !prev);
   }
   function handleOpenNewGroup() {}
-  function handleNotifications() {}
+
+  function handleNotifications() {
+    setIsNotification((prev) => !prev);
+  }
+
   function handleLogout() {}
 
   function handleNaviagteGroup() {
@@ -106,7 +110,7 @@ function Header() {
           <SearchDialog />
         </Suspense>
       )}
-      {/* {isSearch && (
+      {isSearch && (
         <Suspense fallback={<Backdrop open />}>
           <SearchDialog />
         </Suspense>
@@ -115,12 +119,13 @@ function Header() {
         <Suspense fallback={<Backdrop open />}>
           <SearchDialog />
         </Suspense>
-      )} */}
+      )}
       {isNotification && (
         <Suspense fallback={<h1>LODDD..</h1>}>
           <NotificationDialog />
         </Suspense>
-      )}{" "}
+      )}
+
       {isNewGroup && (
         <Suspense fallback={<h1>LODDD..</h1>}>
           <NewGroupDialog />

@@ -27,3 +27,20 @@ export const sampleUsers = [
     _id: "2",
   },
 ];
+
+export const sampleNotifi = [
+  {
+    sender: {
+      avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+      name: "Yo Doe",
+    },
+    _id: "1",
+  },
+  {
+    sender: {
+      avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+      name: "John Doe",
+    },
+    _id: "2",
+  },
+];
