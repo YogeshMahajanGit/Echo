@@ -2,7 +2,6 @@
 import { Box, Typography } from "@mui/material";
 import AppLayout from "../components/layout/AppLayout";
 import bgImg from "../assets/wallapaper.jpeg";
-// import CardMedia from "@mui/material/CardMedia";
 
 function HomePage() {
   return (

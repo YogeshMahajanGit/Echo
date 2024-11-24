@@ -16,8 +16,8 @@ function Message({ message, user }) {
         alignSelf: sameSender ? "flex-end" : "flex-start",
         backgroundColor: sameSender ? `${orange}` : "white",
         color: sameSender ? "white" : "black",
-        borderRadius: sameSender ? "9px 9px 0px 9px" : "0px 9px 9px 9px",
-        padding: "0.6rem",
+        borderRadius: sameSender ? "20px 20px 0px 20px" : "0px 20px 20px 20px",
+        padding: "0.5rem",
         width: "fit-content",
         boxShadow: `${boxShadow}`,
       }}

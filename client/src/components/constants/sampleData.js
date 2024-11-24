@@ -13,6 +13,13 @@ export const chatSample = [
     groupChat: false,
     members: ["1", "2"],
   },
+  {
+    avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+    name: "Dinesh Mahajan",
+    _id: "3",
+    groupChat: false,
+    members: ["1", "2"],
+  },
 ];
 
 export const sampleUsers = [

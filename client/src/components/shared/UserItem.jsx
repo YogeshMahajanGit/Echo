@@ -9,7 +9,13 @@ import {
 } from "@mui/material";
 import { memo } from "react";
 
-function UserItem({ user, handler, handlerIsLoading, isAdded = false }) {
+function UserItem({
+  user,
+  handler,
+  handlerIsLoading,
+  isAdded = false,
+  styling = {},
+}) {
   const { name, _id, avatar } = user;
   return (
     <Paper
@@ -29,6 +35,7 @@ function UserItem({ user, handler, handlerIsLoading, isAdded = false }) {
           alignItems={"center"}
           spacing={"1rem"}
           width={"100%"}
+          {...styling}
         >
           <Avatar />
           <Typography
