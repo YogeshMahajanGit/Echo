@@ -147,4 +147,24 @@ export const dashboardData = {
       },
     },
   ],
+
+  message: [
+    {
+      attachments: [
+        {
+          public_id: "kmknknj",
+          url: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        },
+      ],
+      content: "Massage hai",
+      _id: "mnkbhmbbbnb",
+      sender: {
+        avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        name: "chaman",
+      },
+      chat: "chatid",
+      groupChat: true,
+      createdAt: "2024-02-12T10:41:30.630Z",
+    },
+  ],
 };
