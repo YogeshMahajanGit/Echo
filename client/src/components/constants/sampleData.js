@@ -80,3 +80,24 @@ export const sampleMessage = [
     createdAt: "2024-09-12T10:41:30.630Z",
   },
 ];
+
+export const dashboardData = {
+  users: [
+    {
+      name: "John Doe",
+      avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+      _id: "1",
+      username: "john_doe",
+      friends: 20,
+      groups: 3,
+    },
+    {
+      name: "Yo noe",
+      avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+      _id: "2",
+      username: "Yo_name",
+      friends: 26,
+      groups: 4,
+    },
+  ],
+};
