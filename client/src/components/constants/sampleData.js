@@ -100,4 +100,51 @@ export const dashboardData = {
       groups: 4,
     },
   ],
+
+  chats: [
+    {
+      name: "Coders group",
+      avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+      _id: "1",
+      groupChat: false,
+      members: [
+        {
+          _id: "1",
+          avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        },
+        {
+          _id: "2",
+          avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        },
+      ],
+      totalMembers: 2,
+      totalMessages: 20,
+      creator: {
+        name: "Yo dan",
+        avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+      },
+    },
+    {
+      name: "SSVPS Group",
+      avatar: ["https://cdn-icons-png.flaticon.com/512/6858/6858504.png"],
+      _id: "2",
+      groupChat: false,
+      members: [
+        {
+          _id: "1",
+          avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        },
+        {
+          _id: "2",
+          avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+        },
+      ],
+      totalMembers: 5,
+      totalMessages: 37,
+      creator: {
+        name: "Rahul rajput",
+        avatar: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+      },
+    },
+  ],
 };
