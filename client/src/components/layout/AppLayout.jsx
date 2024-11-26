@@ -7,6 +7,7 @@ import Header from "./Header";
 import { Grid } from "@mui/material";
 import { chatSample } from "../constants/sampleData";
 import Profile from "../specific/Profile";
+import { lightOrange } from "../constants/color";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -47,7 +48,7 @@ const AppLayout = () => {
                 md={5}
                 lg={6}
                 height={"100%"}
-                sx={{ border: "1px solid red" }}
+                sx={{ border: `1px solid ${lightOrange}` }}
               >
                 <WrappedComponent {...props} />
               </Grid>

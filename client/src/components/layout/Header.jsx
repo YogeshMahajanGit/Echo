@@ -62,7 +62,10 @@ function Header() {
             <Typography
               variant="h5"
               sx={{
-                display: { xs: "none", sm: "block" },
+                // display: { xs: "none", sm: "block" },
+                letterSpacing: "0.2rem",
+                fontWeight: "600",
+                cursor: "pointer",
               }}
             >
               Echo
@@ -107,16 +110,6 @@ function Header() {
           </Toolbar>
         </AppBar>
       </Box>
-      {isSearch && (
-        <Suspense fallback={<Backdrop open />}>
-          <SearchDialog />
-        </Suspense>
-      )}
-      {isSearch && (
-        <Suspense fallback={<Backdrop open />}>
-          <SearchDialog />
-        </Suspense>
-      )}
       {isSearch && (
         <Suspense fallback={<Backdrop open />}>
           <SearchDialog />

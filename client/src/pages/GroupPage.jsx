@@ -100,7 +100,7 @@ function GroupPage() {
             sm: "block",
           },
         }}
-        bgcolor={"lightcyan"}
+        borderRight={"1px solid gray"}
         sm={4}
       >
         <GroupsList myGroup={chatSample} chatId={chatId} />
@@ -117,7 +117,6 @@ function GroupPage() {
           padding: "1rem 3rem",
         }}
       >
-        {/* IconBtn */}
         <Box
           sx={{
             width: "100%",

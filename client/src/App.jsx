@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute";
+import LoadingGrid from "./components/shared/LoadingGrid";
 
 // dynamic import(loads on demand)
 const Home = lazy(() => import("./pages/HomePage"));
@@ -20,7 +21,7 @@ let user = true;
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<h5>Login...</h5>}>
+      <Suspense fallback={<LoadingGrid />}>
         <Routes>
           <Route element={<ProtectRoute user={user} />}>
             <Route path="/" element={<Home />} />

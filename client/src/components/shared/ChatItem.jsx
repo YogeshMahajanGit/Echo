@@ -3,6 +3,8 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Link } from "../styles/StyledComponents";
 import { memo } from "react";
 import AvatarCard from "./AvatarCard";
+import { lightOrange } from "../constants/color";
+import { orange } from "@mui/material/colors";
 
 function ChatItem({
   avatar = [],
@@ -18,19 +20,21 @@ function ChatItem({
 }) {
   return (
     <Link
-      sx={{ padding: "0" }}
+      sx={{ padding: "0.3rem 0.5rem", marginTop: "1rem" }}
       to={`/chat/${_id}`}
       onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
     >
       <div
         style={{
           display: "flex",
-          gap: "1rem",
+          gap: "1.2rem",
           alignItems: "center",
-          backgroundColor: sameSender ? "black" : "unset",
-          padding: "1rem",
-          color: sameSender ? "white" : "unset",
+          backgroundColor: sameSender ? `${lightOrange}` : "",
+          padding: "0.3rem",
+          color: "black",
           position: "relative",
+          borderRadius: "0.6rem",
+          border: sameSender ? `1px solid ${orange}` : "",
         }}
       >
         <AvatarCard avatar={avatar} />

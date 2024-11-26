@@ -11,15 +11,13 @@ function AvatarCard({ avatar = [], max = 4 }) {
           position: "relative",
         }}
       >
-        <Box width={"5rem"} height={"3rem"}>
+        <Box width={"3rem"} height={"3rem"}>
           {avatar.map((src, index) => (
             <Avatar
               key={Math.random() * 120}
               src={transformImage(src)}
               alt={`Avatar ${index}`}
               style={{
-                width: "2rem",
-                height: "2rem",
                 border: "2px solid white",
                 position: "absolute",
                 left: {

@@ -24,8 +24,17 @@ function Search() {
 
   return (
     <Dialog open>
-      <Stack padding={"2rem"} direction={"column"} width={"25rem"}>
-        <DialogTitle textAlign={"center"}>Find People</DialogTitle>
+      <Stack
+        padding={"2rem"}
+        direction={"column"}
+        width={"24rem"}
+        sx={{
+          borderRadius: "2rem",
+        }}
+      >
+        <DialogTitle variant="h5" textAlign={"center"}>
+          Find People
+        </DialogTitle>
         <TextField
           label=""
           // value={searchValue.value}
