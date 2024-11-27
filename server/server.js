@@ -2,6 +2,7 @@ import express from "express";
 import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 
 dotenv.config({
@@ -12,6 +13,7 @@ const app = express();
 
 // middleware
 app.use(express.json());
+app.use(cookieParser());
 
 const urlDB = process.env.MONGO_URI;
 const PORT = process.env.PORT || 3000;

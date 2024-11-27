@@ -17,4 +17,4 @@ function sendWebToken(res, user, code, message) {
   });
 }
 
-export { sendWebToken };
+export { sendWebToken, cookieOptions };

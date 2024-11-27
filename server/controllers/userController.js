@@ -2,6 +2,7 @@ import { compare } from "bcrypt";
 import { User } from "../models/userModel.js";
 import { sendWebToken } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
+import { cookieOptions } from "../utils/features.js";
 
 // create a new user
 async function newUser(req, res, next) {
@@ -50,7 +51,7 @@ async function newUser(req, res, next) {
   try {
     sendWebToken(res, user, 201, "User created");
   } catch (err) {
-    next(new Error("Something went wrong during registration"));
+    next(new ErrorHandler("Something went wrong during registration"));
   }
 }
 
@@ -92,12 +93,34 @@ async function login(req, res, next) {
   try {
     sendWebToken(res, user, 200, `Welcome back, ${user.name}`);
   } catch (error) {
-    next(new Error("Something went wrong during login"));
+    next(new ErrorHandler("Something went wrong during login"));
   }
 }
 
-async function getMyProfile(req, res) {
-  // return await user.findById
+//User logout
+async function logout(req, res, next) {
+  return res
+    .status(200)
+    .cookie("echo-token", "", { ...cookieOptions, maxAge: 0 })
+    .json({
+      success: true,
+      message: "Logged out successfully",
+    });
 }
 
-export { login, newUser, getMyProfile };
+async function getMyProfile(req, res, next) {
+  try {
+    const id = req.user;
+    const user = await User.findById(id);
+
+    if (!user) {
+      // next(new Error("
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    next(new ErrorHandler("Something Wrong ~"));
+  }
+}
+
+export { login, newUser, logout, getMyProfile };
