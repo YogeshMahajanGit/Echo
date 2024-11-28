@@ -2,6 +2,7 @@ import express from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import {
   addMemberGroup,
+  getChatDetails,
   getMyChatMessage,
   getMyGroups,
   leaveGroup,
@@ -27,5 +28,7 @@ chatRouter.delete("/removemembers", authenticate, removeMemberGroup);
 chatRouter.delete("/leavegroup/:id", authenticate, leaveGroup);
 
 chatRouter.post("/message", authenticate, attachmentsMulter, sendAttachments);
+
+chatRouter.route("/:id", authenticate).get(getChatDetails);
 
 export default chatRouter;
