@@ -4,7 +4,9 @@ import {
   addMemberGroup,
   getMyChatMessage,
   getMyGroups,
+  leaveGroup,
   newGroupChat,
+  removeMemberGroup,
 } from "../controllers/chatController.js";
 
 const chatRouter = express.Router();
@@ -17,5 +19,9 @@ chatRouter.get("/my", authenticate, getMyChatMessage);
 chatRouter.get("/my/groups", authenticate, getMyGroups);
 
 chatRouter.put("/addmembers", authenticate, addMemberGroup);
+
+chatRouter.delete("/removemembers", authenticate, removeMemberGroup);
+
+chatRouter.delete("/leavegroup/:id", authenticate, leaveGroup);
 
 export default chatRouter;
