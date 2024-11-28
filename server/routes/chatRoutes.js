@@ -7,7 +7,9 @@ import {
   leaveGroup,
   newGroupChat,
   removeMemberGroup,
+  sendAttachments,
 } from "../controllers/chatController.js";
+import { attachmentsMulter } from "../middlewares/multer.js";
 
 const chatRouter = express.Router();
 
@@ -23,5 +25,7 @@ chatRouter.put("/addmembers", authenticate, addMemberGroup);
 chatRouter.delete("/removemembers", authenticate, removeMemberGroup);
 
 chatRouter.delete("/leavegroup/:id", authenticate, leaveGroup);
+
+chatRouter.post("/message", authenticate, attachmentsMulter, sendAttachments);
 
 export default chatRouter;
