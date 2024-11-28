@@ -4,6 +4,7 @@ import {
   login,
   logout,
   newUser,
+  searchUser,
 } from "../controllers/userController.js";
 import { singleAvatar } from "../middlewares/multer.js";
 import { authenticate } from "../middlewares/authenticate.js";
@@ -17,5 +18,6 @@ userRouter.post("/login", login);
 //Routes with auth
 userRouter.get("/me", authenticate, getMyProfile);
 userRouter.get("/logout", authenticate, logout);
+userRouter.get("/search", authenticate, searchUser);
 
 export default userRouter;

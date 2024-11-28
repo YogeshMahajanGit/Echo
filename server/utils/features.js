@@ -17,4 +17,8 @@ function sendWebToken(res, user, code, message) {
   });
 }
 
-export { sendWebToken, cookieOptions };
+function emitEvent(req, event, user, data) {
+  console.log("emmit");
+}
+
+export { sendWebToken, cookieOptions, emitEvent };

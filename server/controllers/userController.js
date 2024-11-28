@@ -114,7 +114,7 @@ async function getMyProfile(req, res, next) {
     const user = await User.findById(id);
 
     if (!user) {
-      // next(new Error("
+      next(new ErrorHandler("Usser not found"));
     }
 
     res.json({ success: true, user });
@@ -123,4 +123,17 @@ async function getMyProfile(req, res, next) {
   }
 }
 
-export { login, newUser, logout, getMyProfile };
+//search user
+async function searchUser(req, res, next) {
+  const { name } = req.query;
+
+  return res.status(200).json({
+    success: true,
+    message: name,
+  });
+  // try {
+  // } catch (error) {
+  //   next(new ErrorHandler("Something Wrong ~"));
+  // }
+}
+export { login, newUser, logout, getMyProfile, searchUser };

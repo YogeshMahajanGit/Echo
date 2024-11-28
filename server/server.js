@@ -1,5 +1,6 @@
 import express from "express";
 import userRouter from "./routes/userRoutes.js";
+import chatRouter from "./routes/chatRoutes.js";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -22,6 +23,7 @@ connectDB(urlDB);
 
 // Routes
 app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);
 
 //testing
 app.get("/", (req, res) => {
