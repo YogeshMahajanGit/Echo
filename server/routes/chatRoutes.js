@@ -14,35 +14,76 @@ import {
   handleSendAttachments,
 } from "../controllers/chatController.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
+import {
+  addMemberValidator,
+  chatIdValidator,
+  handleValidator,
+  newGroupValidator,
+  removeMemberValidator,
+  renameGroupValidator,
+  sendAttachmentsValidator,
+} from "../lib/validators.js";
 
 const chatRouter = express.Router();
 
 //Routes for chat
-chatRouter.post("/newGroup", authenticate, handleNewGroupChat);
+chatRouter.post(
+  "/newGroup",
+  authenticate,
+  newGroupValidator(),
+  handleValidator,
+  handleNewGroupChat
+);
 
 chatRouter.get("/my", authenticate, handleGetMyChatMessage);
 
 chatRouter.get("/my/groups", authenticate, handleGetMyGroups);
 
-chatRouter.put("/addmembers", authenticate, handleAddMemberGroup);
+chatRouter.put(
+  "/addmembers",
+  authenticate,
+  addMemberValidator(),
+  handleValidator,
+  handleAddMemberGroup
+);
 
-chatRouter.delete("/removemembers", authenticate, handleRemoveMemberGroup);
+chatRouter.delete(
+  "/removemembers",
+  authenticate,
+  removeMemberValidator(),
+  handleValidator,
+  handleRemoveMemberGroup
+);
 
-chatRouter.delete("/leavegroup/:id", authenticate, handleLeaveGroup);
+chatRouter.delete(
+  "/leavegroup/:id",
+  authenticate,
+  chatIdValidator(),
+  handleValidator,
+  handleLeaveGroup
+);
 
 chatRouter.post(
   "/message",
   authenticate,
   attachmentsMulter,
+  sendAttachmentsValidator(),
+  handleValidator,
   handleSendAttachments
 );
 
-chatRouter.get("/message/:id", authenticate, handleGetMessages);
+chatRouter.get(
+  "/message/:id",
+  authenticate,
+  chatIdValidator(),
+  handleValidator,
+  handleGetMessages
+);
 
 chatRouter
   .route("/:id", authenticate)
-  .get(handleGetChatDetails)
-  .put(handleRenameGroup)
-  .delete(handleDeleteChat);
+  .get(chatIdValidator(), handleValidator, handleGetChatDetails)
+  .put(renameGroupValidator(), handleValidator, handleRenameGroup)
+  .delete(chatIdValidator(), handleValidator, handleDeleteChat);
 
 export default chatRouter;

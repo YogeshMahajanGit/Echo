@@ -17,10 +17,6 @@ async function handleNewGroupChat(req, res, next) {
 
   // Validate
   try {
-    if (members.length < 2) {
-      return next(new ErrorHandler("Group must have at least 3 members", 400));
-    }
-
     const allMembers = [...members, req.user];
 
     // Create a new group chat
