@@ -1,8 +1,11 @@
-// import { Grid } from "@mui/material";
-// import { Skeleton } from "@mui/material";
+import "../../style.css";
 
 function LoadingGrid() {
-  return <h1>LoadingGrid......</h1>;
+  return (
+    <div className="div-load">
+      <div className="loader"></div>;
+    </div>
+  );
 }
 
 export default LoadingGrid;
