@@ -21,4 +21,6 @@ function emitEvent(req, event, user, data) {
   console.log("emmit");
 }
 
-export { sendWebToken, cookieOptions, emitEvent };
+function deleteFilesFromCloudinary(public_ids) {}
+
+export { sendWebToken, cookieOptions, emitEvent, deleteFilesFromCloudinary };

@@ -2,7 +2,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chatModel.js";
 import { User } from "../models/userModel.js";
 import { Message } from "../models/messageModel.js";
-import { emitEvent } from "../utils/features.js";
+import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
 import {
   ALERT,
   NEW_ATTACHMENT,
@@ -287,6 +287,7 @@ async function leaveGroup(req, res, next) {
   });
 }
 
+//send Image/Video/files
 async function sendAttachments(req, res, next) {
   const { chatId } = req.body;
 
@@ -338,6 +339,7 @@ async function sendAttachments(req, res, next) {
   });
 }
 
+// Chat Details
 async function getChatDetails(req, res, next) {
   // find chat details
   if (req.query.populate === "true") {
@@ -374,6 +376,110 @@ async function getChatDetails(req, res, next) {
   }
 }
 
+// Rename Group
+async function reNameGroup(req, res, next) {
+  const chatId = req.params.id;
+  const { name } = req.body;
+
+  try {
+    // Find the chat by ID
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+    if (!chat.groupChat) {
+      return next(new ErrorHandler("This is not a group chat", 400));
+    }
+
+    // Only creator can rename the group
+    if (req.user) {
+      if (chat.creator.toString() !== req.user?.toString()) {
+        return next(
+          new ErrorHandler("You are not allowed to rename this group", 400)
+        );
+      }
+    }
+
+    // Update the group name
+    chat.name = name;
+
+    // Save chat
+    try {
+      await chat.save();
+    } catch (err) {
+      return next(new ErrorHandler(err.message, 500));
+    }
+
+    // Emit events
+    emitEvent(req, REFETCH_CHATS, chat.members);
+
+    return res.status(200).json({
+      success: true,
+      message: "Group name has been updated",
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.message, 500));
+  }
+}
+
+async function handleDeleteChat(req, res, next) {
+  const chatId = req.params.id;
+
+  try {
+    // Find the chat by ID
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+    const members = chat.members;
+
+    if (!chat.groupChat && chat.creator.toString() !== req.user.toString()) {
+      return next(
+        new ErrorHandler("You are not allowed to delete this group", 400)
+      );
+    }
+
+    if (!chat.groupChat && chat.members.includes(req.user.toString())) {
+      return next(
+        new ErrorHandler("You are not allowed to delete this group", 403)
+      );
+    }
+
+    // Delete chat and chat attachments
+    try {
+      const public_ids = [];
+
+      const messageAttachments = await Message.find({
+        chat: chatId,
+        attachments: { $exists: true, $ne: [] },
+      });
+
+      messageAttachments.forEach(({ attachments }) =>
+        attachments.forEach(({ public_id }) => public_ids.push(public_id))
+      );
+
+      // delete cloudinary files
+      await Promise.all([
+        deleteFilesFromCloudinary(public_ids),
+        chat.deleteOne(),
+        Message.deleteMany({ chat: chatId }),
+      ]);
+    } catch (err) {
+      return next(new ErrorHandler(err.message, 500));
+    }
+
+    // Emit events
+    emitEvent(req, REFETCH_CHATS, members);
+
+    return res.status(200).json({
+      success: true,
+      message: "Chat deleted successfully",
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.message, 500));
+  }
+}
+
 export {
   newGroupChat,
   getMyChatMessage,
@@ -383,4 +489,6 @@ export {
   leaveGroup,
   sendAttachments,
   getChatDetails,
+  reNameGroup,
+  handleDeleteChat,
 };

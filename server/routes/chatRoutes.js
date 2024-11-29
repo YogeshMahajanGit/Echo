@@ -5,9 +5,11 @@ import {
   getChatDetails,
   getMyChatMessage,
   getMyGroups,
+  handleDeleteChat,
   leaveGroup,
   newGroupChat,
   removeMemberGroup,
+  reNameGroup,
   sendAttachments,
 } from "../controllers/chatController.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
@@ -29,6 +31,12 @@ chatRouter.delete("/leavegroup/:id", authenticate, leaveGroup);
 
 chatRouter.post("/message", authenticate, attachmentsMulter, sendAttachments);
 
-chatRouter.route("/:id", authenticate).get(getChatDetails);
+chatRouter
+  .route("/:id", authenticate)
+  .get(getChatDetails)
+  .put(reNameGroup)
+  .delete(handleDeleteChat);
+
+// chatRouter;
 
 export default chatRouter;
