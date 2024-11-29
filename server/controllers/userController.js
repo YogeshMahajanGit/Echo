@@ -5,7 +5,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { cookieOptions } from "../utils/features.js";
 
 // create a new user
-async function newUser(req, res, next) {
+async function handleNewUser(req, res, next) {
   const { name, username, password, bio } = req.body;
 
   // Validation
@@ -56,7 +56,7 @@ async function newUser(req, res, next) {
 }
 
 //User Login
-async function login(req, res, next) {
+async function handleLogin(req, res, next) {
   const { username, password } = req.body;
 
   // Validation
@@ -93,12 +93,12 @@ async function login(req, res, next) {
   try {
     sendWebToken(res, user, 200, `Welcome back, ${user.name}`);
   } catch (error) {
-    next(new ErrorHandler("Something went wrong during login"));
+    next(new ErrorHandler("Something went wrong during handleLogin"));
   }
 }
 
-//User logout
-async function logout(req, res, next) {
+//User Logout
+async function handleLogout(req, res, next) {
   return res
     .status(200)
     .cookie("echo-token", "", { ...cookieOptions, maxAge: 0 })
@@ -108,7 +108,7 @@ async function logout(req, res, next) {
     });
 }
 
-async function getMyProfile(req, res, next) {
+async function handleGetMyProfile(req, res, next) {
   try {
     const id = req.user;
     const user = await User.findById(id);
@@ -124,7 +124,7 @@ async function getMyProfile(req, res, next) {
 }
 
 //search user
-async function searchUser(req, res, next) {
+async function handleSearchUser(req, res, next) {
   const { name } = req.query;
 
   return res.status(200).json({
@@ -136,4 +136,11 @@ async function searchUser(req, res, next) {
   //   next(new ErrorHandler("Something Wrong ~"));
   // }
 }
-export { login, newUser, logout, getMyProfile, searchUser };
+
+export {
+  handleLogin,
+  handleNewUser,
+  handleLogout,
+  handleGetMyProfile,
+  handleSearchUser,
+};
