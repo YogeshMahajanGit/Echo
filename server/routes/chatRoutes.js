@@ -1,42 +1,48 @@
 import express from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import {
-  addMemberGroup,
-  getChatDetails,
-  getMyChatMessage,
-  getMyGroups,
+  handleAddMemberGroup,
+  handleGetChatDetails,
+  handleGetMyChatMessage,
+  handleGetMyGroups,
   handleDeleteChat,
-  leaveGroup,
-  newGroupChat,
-  removeMemberGroup,
-  reNameGroup,
-  sendAttachments,
+  handleGetMessages,
+  handleLeaveGroup,
+  handleNewGroupChat,
+  handleRemoveMemberGroup,
+  handleRenameGroup,
+  handleSendAttachments,
 } from "../controllers/chatController.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
 
 const chatRouter = express.Router();
 
 //Routes for chat
-chatRouter.post("/newGroup", authenticate, newGroupChat);
+chatRouter.post("/newGroup", authenticate, handleNewGroupChat);
 
-chatRouter.get("/my", authenticate, getMyChatMessage);
+chatRouter.get("/my", authenticate, handleGetMyChatMessage);
 
-chatRouter.get("/my/groups", authenticate, getMyGroups);
+chatRouter.get("/my/groups", authenticate, handleGetMyGroups);
 
-chatRouter.put("/addmembers", authenticate, addMemberGroup);
+chatRouter.put("/addmembers", authenticate, handleAddMemberGroup);
 
-chatRouter.delete("/removemembers", authenticate, removeMemberGroup);
+chatRouter.delete("/removemembers", authenticate, handleRemoveMemberGroup);
 
-chatRouter.delete("/leavegroup/:id", authenticate, leaveGroup);
+chatRouter.delete("/leavegroup/:id", authenticate, handleLeaveGroup);
 
-chatRouter.post("/message", authenticate, attachmentsMulter, sendAttachments);
+chatRouter.post(
+  "/message",
+  authenticate,
+  attachmentsMulter,
+  handleSendAttachments
+);
+
+chatRouter.get("/message/:id", authenticate, handleGetMessages);
 
 chatRouter
   .route("/:id", authenticate)
-  .get(getChatDetails)
-  .put(reNameGroup)
+  .get(handleGetChatDetails)
+  .put(handleRenameGroup)
   .delete(handleDeleteChat);
-
-// chatRouter;
 
 export default chatRouter;

@@ -12,7 +12,7 @@ import {
 import { getOtherMember } from "../lib/helper.js";
 
 // New Group
-async function newGroupChat(req, res, next) {
+async function handleNewGroupChat(req, res, next) {
   const { name, members } = req.body;
 
   // Validate
@@ -53,7 +53,7 @@ async function newGroupChat(req, res, next) {
 }
 
 // Get user chat
-async function getMyChatMessage(req, res, next) {
+async function handleGetMyChatMessage(req, res, next) {
   // Fetch user chats
   const chats = await Chat.find({ members: req.user }).populate(
     "members",
@@ -95,7 +95,7 @@ async function getMyChatMessage(req, res, next) {
 }
 
 // Get groups
-async function getMyGroups(req, res, next) {
+async function handleGetMyGroups(req, res, next) {
   // Fetch groups
   const chats = await Chat.find({
     members: req.user,
@@ -126,7 +126,7 @@ async function getMyGroups(req, res, next) {
 }
 
 // add new members
-async function addMemberGroup(req, res, next) {
+async function handleAddMemberGroup(req, res, next) {
   const { chatId, members } = req.body;
 
   if (!chatId || !members || members.length < 1) {
@@ -188,7 +188,7 @@ async function addMemberGroup(req, res, next) {
 }
 
 // remove members
-async function removeMemberGroup(req, res, next) {
+async function handleRemoveMemberGroup(req, res, next) {
   const { userId, chatId } = req.body;
 
   try {
@@ -246,7 +246,7 @@ async function removeMemberGroup(req, res, next) {
 }
 
 // leave a group
-async function leaveGroup(req, res, next) {
+async function handleLeaveGroup(req, res, next) {
   const chatId = req.params.id;
 
   //find chat
@@ -288,7 +288,7 @@ async function leaveGroup(req, res, next) {
 }
 
 //send Image/Video/files
-async function sendAttachments(req, res, next) {
+async function handleSendAttachments(req, res, next) {
   const { chatId } = req.body;
 
   // database call
@@ -340,7 +340,7 @@ async function sendAttachments(req, res, next) {
 }
 
 // Chat Details
-async function getChatDetails(req, res, next) {
+async function handleGetChatDetails(req, res, next) {
   // find chat details
   if (req.query.populate === "true") {
     const chat = await Chat.findById(req.params.id)
@@ -377,7 +377,7 @@ async function getChatDetails(req, res, next) {
 }
 
 // Rename Group
-async function reNameGroup(req, res, next) {
+async function handleRenameGroup(req, res, next) {
   const chatId = req.params.id;
   const { name } = req.body;
 
@@ -422,6 +422,7 @@ async function reNameGroup(req, res, next) {
   }
 }
 
+//Delete a chat
 async function handleDeleteChat(req, res, next) {
   const chatId = req.params.id;
 
@@ -480,15 +481,50 @@ async function handleDeleteChat(req, res, next) {
   }
 }
 
+// Get mwssage pages wise
+async function handleGetMessages(req, res, next) {
+  try {
+    //get chat id
+    const chatId = req.params.id;
+    const { page = 1 } = req.query;
+
+    const perPage = 20;
+    const skip = (page - 1) * perPage;
+
+    //resolve promise for chat pages
+    const [messages, totalMessagesCount] = await Promise.all([
+      Message.find({ chat: chatId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(perPage)
+        .populate("sender", "name avatar")
+        .lean(),
+      Message.countDocuments({ chat: chatId }),
+    ]);
+
+    const totalPages = Math.ceil(totalMessagesCount / perPage);
+
+    // send response
+    return res.status(200).json({
+      success: true,
+      messages: messages.reverse(),
+      totalPages,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+}
+
 export {
-  newGroupChat,
-  getMyChatMessage,
-  getMyGroups,
-  addMemberGroup,
-  removeMemberGroup,
-  leaveGroup,
-  sendAttachments,
-  getChatDetails,
-  reNameGroup,
+  handleNewGroupChat,
+  handleGetMyChatMessage,
+  handleGetMyGroups,
+  handleAddMemberGroup,
+  handleRemoveMemberGroup,
+  handleLeaveGroup,
+  handleSendAttachments,
+  handleGetChatDetails,
+  handleRenameGroup,
   handleDeleteChat,
+  handleGetMessages,
 };
