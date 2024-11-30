@@ -1,8 +1,13 @@
 import { compare } from "bcrypt";
 import { User } from "../models/userModel.js";
-import { sendWebToken } from "../utils/features.js";
+import { Chat } from "../models/chatModel.js";
+import { Request } from "../models/requestModel.js";
+import { emitEvent, sendWebToken } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { cookieOptions } from "../utils/features.js";
+import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
+import { getOtherMember } from "../lib/helper.js";
+import { json } from "express";
 
 // create a new user
 async function handleNewUser(req, res, next) {
@@ -114,7 +119,7 @@ async function handleGetMyProfile(req, res, next) {
     const user = await User.findById(id);
 
     if (!user) {
-      next(new ErrorHandler("Usser not found"));
+      next(new ErrorHandler("User not found"));
     }
 
     res.json({ success: true, user });
@@ -125,16 +130,190 @@ async function handleGetMyProfile(req, res, next) {
 
 //search user
 async function handleSearchUser(req, res, next) {
-  const { name } = req.query;
+  const { name = "" } = req.query;
+
+  try {
+    //my chats
+    const myChats = await Chat.find({ groupChat: false, members: req.user });
+
+    const allUsers = myChats.flatMap((chat) => chat.members);
+
+    // find all users
+    const newUserExceptMe = await User.find({
+      _id: { $nin: allUsers },
+      name: { $regex: name, $options: "i" },
+    });
+
+    const users = newUserExceptMe.map(({ _id, name, avatar }) => ({
+      _id,
+      name,
+      avatar: avatar.url,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    next(new ErrorHandler("Something Wrong ~"));
+  }
+}
+
+async function handleFriendRequest(req, res, next) {
+  const { userId } = req.body;
+
+  const request = await Request.findOne({
+    $or: [
+      { sender: req.user, receiver: userId },
+      { sender: userId, receiver: req.user },
+    ],
+  });
+
+  if (request) return next(new ErrorHandler("Request already sent"));
+
+  await Request.create({
+    sender: req.user,
+    receiver: userId,
+  });
+
+  emitEvent(req, NEW_REQUEST, [userId]);
 
   return res.status(200).json({
     success: true,
-    message: name,
+    message: "Request sent",
   });
-  // try {
-  // } catch (error) {
-  //   next(new ErrorHandler("Something Wrong ~"));
-  // }
+}
+
+async function handleAcceptFriendRequest(req, res, next) {
+  const { requestId, accept } = req.body;
+
+  if (!requestId) {
+    return next(new ErrorHandler("Invalid request", 500));
+  }
+
+  //find req and handle
+  try {
+    const request = await Request.findById(requestId)
+      .populate("sender", "name")
+      .populate("receiver", "name");
+
+    if (!request) {
+      return next(new ErrorHandler("Invalid request", 400));
+    }
+
+    // check request
+    if (request.receiver._id.toString() !== req.user.toString()) {
+      return next(new ErrorHandler("Can't accept request", 400));
+    }
+
+    // remove request if not accept
+    if (!accept) {
+      await request.deleteOne();
+
+      return res.status(200).json({
+        success: true,
+        message: "Request rejected",
+      });
+    }
+
+    //create chat & notify the members
+    const members = [request.sender._id, request.receiver._id];
+
+    await Promise.all([
+      Chat.create({
+        members,
+        name: `${request.sender.name} - ${request.receiver.name}`,
+      }),
+      request.deleteOne(),
+    ]);
+
+    emitEvent(req, REFETCH_CHATS, members);
+
+    //send response
+    return res.status(200).json({
+      success: true,
+      message: "Request Accepted",
+      senderId: request.sender._id,
+    });
+  } catch (error) {
+    return next(new Error(error.message + `Something went wrong ~`));
+  }
+}
+
+async function handleUserNotifications(req, res, next) {
+  try {
+    // find all notifications
+    const request = await Request.find({ receiver: req.user }).populate(
+      "sender",
+      "name avatar"
+    );
+
+    // transform data
+    const allNotifications = request.map(({ _id, sender }) => ({
+      _id,
+      sender: {
+        _id: sender._id,
+        name: sender.name,
+        avatar: sender.avatar.url,
+      },
+    }));
+
+    // send response
+
+    return res.status(200).json({
+      success: true,
+      allNotifications,
+    });
+  } catch (error) {
+    return next(new Error(`Something went wrong ~` + error.message));
+  }
+}
+
+async function handleGetMyFriends(req, res, next) {
+  const chatId = req.query.chatId;
+
+  try {
+    const chats = await Chat.find({
+      members: req.user,
+      groupChat: false,
+    }).populate("members", "name avatar");
+
+    // Transform chats into a list of friends
+    const friends = chats.map(({ members }) => {
+      const otherUser = getOtherMember(members, req.user);
+      return {
+        _id: otherUser._id,
+        name: otherUser.name,
+        avatar: otherUser.avatar.url,
+      };
+    });
+
+    // Filter out friends already in the chat
+    if (chatId) {
+      const chat = await Chat.findById(chatId);
+      if (!chat) {
+        return next(new ErrorHandler("Chat not found", 404));
+      }
+
+      const availableFriends = friends.filter(
+        (friend) => !chat.members.includes(friend._id.toString())
+      );
+
+      return res.status(200).json({
+        success: true,
+        friends: availableFriends,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        friends,
+      });
+    }
+  } catch (error) {
+    return next(
+      new ErrorHandler("Something went wrong: " + error.message, 500)
+    );
+  }
 }
 
 export {
@@ -143,4 +322,8 @@ export {
   handleLogout,
   handleGetMyProfile,
   handleSearchUser,
+  handleFriendRequest,
+  handleAcceptFriendRequest,
+  handleUserNotifications,
+  handleGetMyFriends,
 };
