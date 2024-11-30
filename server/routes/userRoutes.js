@@ -33,15 +33,17 @@ userRouter.post(
 userRouter.post("/login", loginValidator(), handleValidator, handleLogin);
 
 //Routes with auth
-userRouter.get("/me", authenticate, handleGetMyProfile);
+userRouter.use(authenticate);
 
-userRouter.get("/logout", authenticate, handleLogout);
+userRouter.get("/me", handleGetMyProfile);
 
-userRouter.get("/search", authenticate, handleSearchUser);
+userRouter.get("/logout", handleLogout);
+
+userRouter.get("/search", handleSearchUser);
 
 userRouter.put(
   "/send-request",
-  authenticate,
+
   requestValidator(),
   handleValidator,
   handleFriendRequest
@@ -49,14 +51,14 @@ userRouter.put(
 
 userRouter.put(
   "/accept-request",
-  authenticate,
+
   acceptRequestValidator(),
   handleValidator,
   handleAcceptFriendRequest
 );
 
-userRouter.get("/notifications", authenticate, handleUserNotifications);
+userRouter.get("/notifications", handleUserNotifications);
 
-userRouter.get("/friends", authenticate, handleGetMyFriends);
+userRouter.get("/friends", handleGetMyFriends);
 
 export default userRouter;

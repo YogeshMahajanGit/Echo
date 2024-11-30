@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ErrorHandler } from "../utils/utility.js";
+import { adminSecretKey } from "../server.js";
 
 function authenticate(req, res, next) {
   //Get token
@@ -21,4 +22,20 @@ function authenticate(req, res, next) {
   next();
 }
 
-export { authenticate };
+function authenticateAdmin(req, res, next) {
+  const token = req.cookies["echo-admin-token"];
+
+  if (!token) return next(new ErrorHandler("Access denied!", 401));
+
+  const secretKey = jwt.verify(token, process.env.JWT_SECRET);
+
+  const isMatch = secretKey === adminSecretKey;
+
+  if (!isMatch) {
+    return next(new ErrorHandler("Access denied!", 401));
+  }
+
+  next();
+}
+
+export { authenticate, authenticateAdmin };
