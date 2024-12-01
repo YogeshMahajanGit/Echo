@@ -13,6 +13,10 @@ import { json } from "express";
 async function handleNewUser(req, res, next) {
   const { name, username, password, bio } = req.body;
 
+  const file = req.file;
+
+  if (!file) return next(new ErrorHandler("Please Select Profile"));
+
   // Validation
   if (!name || !username || !password) {
     return next(new ErrorHandler("All fields are required"));

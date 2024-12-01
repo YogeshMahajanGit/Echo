@@ -27,21 +27,22 @@ import {
 const chatRouter = express.Router();
 
 //Routes for chat
+
+chatRouter.use(authenticate);
+
 chatRouter.post(
   "/newGroup",
-  authenticate,
   newGroupValidator(),
   handleValidator,
   handleNewGroupChat
 );
 
-chatRouter.get("/my", authenticate, handleGetMyChatMessage);
+chatRouter.get("/my", handleGetMyChatMessage);
 
-chatRouter.get("/my/groups", authenticate, handleGetMyGroups);
+chatRouter.get("/my/groups", handleGetMyGroups);
 
 chatRouter.put(
   "/addmembers",
-  authenticate,
   addMemberValidator(),
   handleValidator,
   handleAddMemberGroup
@@ -49,7 +50,6 @@ chatRouter.put(
 
 chatRouter.delete(
   "/removemembers",
-  authenticate,
   removeMemberValidator(),
   handleValidator,
   handleRemoveMemberGroup
@@ -57,7 +57,6 @@ chatRouter.delete(
 
 chatRouter.delete(
   "/leavegroup/:id",
-  authenticate,
   chatIdValidator(),
   handleValidator,
   handleLeaveGroup
@@ -65,7 +64,6 @@ chatRouter.delete(
 
 chatRouter.post(
   "/message",
-  authenticate,
   attachmentsMulter,
   sendAttachmentsValidator(),
   handleValidator,
@@ -74,14 +72,13 @@ chatRouter.post(
 
 chatRouter.get(
   "/message/:id",
-  authenticate,
   chatIdValidator(),
   handleValidator,
   handleGetMessages
 );
 
 chatRouter
-  .route("/:id", authenticate)
+  .route("/:id")
   .get(chatIdValidator(), handleValidator, handleGetChatDetails)
   .put(renameGroupValidator(), handleValidator, handleRenameGroup)
   .delete(chatIdValidator(), handleValidator, handleDeleteChat);

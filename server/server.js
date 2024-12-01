@@ -18,8 +18,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 const urlDB = process.env.MONGO_URI;
+const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
 const PORT = process.env.PORT || 3000;
-export const adminSecretKey = process.env.ADMIN_SECRET_KEY;
+const adminSecretKey = process.env.ADMIN_SECRET_KEY;
 
 connectDB(urlDB);
 
@@ -35,5 +36,7 @@ app.get("/", (req, res) => {
 
 app.use(globalErrorHandler);
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} 🚀`);
+  console.log(`Server is running on port ${PORT} in ${envMode} Mode 🚀`);
 });
+
+export { adminSecretKey, envMode };

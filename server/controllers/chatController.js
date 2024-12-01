@@ -286,6 +286,10 @@ async function handleLeaveGroup(req, res, next) {
 //send Image/Video/files
 async function handleSendAttachments(req, res, next) {
   const { chatId } = req.body;
+  const files = req.files || [];
+
+  if (files.length < 1)
+    return next(new ErrorHandler("Please Upload attachments", 400));
 
   // database call
   const [chat, user] = await Promise.all([
@@ -294,8 +298,6 @@ async function handleSendAttachments(req, res, next) {
   ]);
 
   if (!chat) return next(new ErrorHandler("Chat not found", 404));
-
-  const files = req.files || [];
 
   if (files.length < 1)
     return next(new ErrorHandler("Please provide a file", 400));

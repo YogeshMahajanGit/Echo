@@ -18,7 +18,6 @@ const registerValidator = () => [
   body("username", "Please Enter Username").notEmpty(),
   body("password", "Please Enter Password").notEmpty(),
   body("bio", "Please Enter Bio").notEmpty(),
-  check("avatar", "Please Select Profile").notEmpty(),
 ];
 
 const loginValidator = () => [
@@ -51,11 +50,6 @@ const removeMemberValidator = () => [
 
 const sendAttachmentsValidator = () => [
   body("chatId", "Please Enter  ID").notEmpty(),
-  check("files")
-    .notEmpty()
-    .withMessage("Attachments")
-    .isArray({ min: 1, max: 3 })
-    .withMessage("Files must be less than 3"),
 ];
 
 const getMessagesValidator = () => [param("id", "Please Enter ID").notEmpty()];
