@@ -16,12 +16,12 @@ import {
   KeyboardBackspace,
   Menu,
 } from "@mui/icons-material";
-import { btnBg, btnBgLight } from "../components/constants/color";
+import { btnBg, btnBgLight } from "../constants/color";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import IconBtn from "../components/shared/IconBtn";
 import { lazy, Suspense, useEffect, useState } from "react";
 import GroupsList from "../components/specific/GroupsList";
-import { chatSample, sampleUsers } from "../components/constants/sampleData";
+import { chatSample, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
 
 const ConfirmDeleteDialog = lazy(() =>

@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { sampleUsers } from "../constants/sampleData";
+import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useInputValidation } from "6pp";
 import { useState } from "react";

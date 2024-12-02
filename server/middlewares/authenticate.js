@@ -7,7 +7,9 @@ function authenticate(req, res, next) {
   const token = req.cookies["echo-token"];
 
   if (!token) {
-    return next(new ErrorHandler("Authorization is NOT Valid", 402));
+    return next(
+      new ErrorHandler("Unauthorized access. Please log in again", 401)
+    );
   }
 
   //Token verification
