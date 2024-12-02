@@ -7,6 +7,14 @@ const NEW_REQUEST = "NEW_REQUEST";
 // socket events
 const NEW_MESSAGE = "NEW_MESSAGE";
 
+// const START_TYPING = "START_TYPING";
+// const STOP_TYPING = "STOP_TYPING";
+
+// const CHAT_JOINED = "CHAT_JOINED";
+// const CHAT_LEAVED = "CHAT_LEAVED";
+
+// const ONLINE_USERS = "ONLINE_USERS";
+
 export {
   ALERT,
   REFETCH_CHATS,

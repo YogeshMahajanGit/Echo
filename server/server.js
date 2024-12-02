@@ -12,6 +12,7 @@ import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { v4 as uuid } from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
+import cors from "cors";
 
 dotenv.config({
   path: "./.env",
@@ -24,6 +25,16 @@ const io = new Server(server, {});
 // middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      process.env.CLIENT_URL,
+    ],
+    credentials: true,
+  })
+);
 
 const urlDB = process.env.MONGO_URI;
 const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
@@ -31,12 +42,13 @@ const PORT = process.env.PORT || 3000;
 const adminSecretKey = process.env.ADMIN_SECRET_KEY;
 const userSocketIDs = new Map();
 
+//DB connection
 connectDB(urlDB);
 
 // Routes
-app.use("/api/user", userRouter);
-app.use("/api/chat", chatRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/chats", chatRouter);
+app.use("/api/v1/admin", adminRouter);
 
 //testing
 app.get("/", (req, res) => {
