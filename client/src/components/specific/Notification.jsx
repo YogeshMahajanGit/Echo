@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, Stack, Typography } from "@mui/material";
-import { sampleNotifi } from "../constants/sampleData";
+import { sampleNotifi } from "../../constants/sampleData";
 import NotificationItem from "./NotificationItem";
 
 function Notification() {

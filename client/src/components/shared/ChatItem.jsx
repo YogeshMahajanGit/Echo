@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Link } from "../styles/StyledComponents";
 import { memo } from "react";
 import AvatarCard from "./AvatarCard";
-import { lightOrange } from "../constants/color";
+import { lightOrange } from "../../constants/color";
 import { orange } from "@mui/material/colors";
 
 function ChatItem({

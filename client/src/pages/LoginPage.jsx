@@ -13,6 +13,11 @@ import { CameraAlt } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
 import { usernameValidator } from "../utils/validators";
+import axios from "axios";
+import { server } from "../constants/config";
+import { useDispatch } from "react-redux";
+import { userExists } from "../redux/reducers/auth";
+import toast from "react-hot-toast";
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,11 +30,66 @@ function LoginPage() {
   const password = useStrongPassword();
   const avatar = useFileHandler("single", 2);
 
-  function handleSignUp(e) {
+  const dispatch = useDispatch();
+
+  async function handleSignUp(e) {
     e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    // form data
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("username", username.value);
+    formData.append("password", password.value);
+    formData.append("name", name.value);
+    formData.append("bio", bio.value);
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/users/new`,
+        formData,
+        config
+      );
+
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   }
-  function handleLogin(e) {
+
+  async function handleLogin(e) {
     e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    // server fetch request
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/users/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   }
 
   return (

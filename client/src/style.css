@@ -12,7 +12,7 @@
 
   width: calc(2 * (1.353 * var(--s) + var(--g)));
   aspect-ratio: 1;
-  background: linear-gradient(#ff1818 0 0) left/50% 100% no-repeat,
+  background: linear-gradient(#4f46e5 0 0) left/50% 100% no-repeat,
     conic-gradient(
       from -90deg at var(--s) calc(0.353 * var(--s)),
       #fff 135deg,

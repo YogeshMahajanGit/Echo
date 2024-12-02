@@ -1,12 +1,12 @@
 import { IconButton, Stack } from "@mui/material";
 import AppLayout from "../components/layout/AppLayout";
 import { useRef } from "react";
-import { grayColor, orange } from "../components/constants/color";
+import { grayColor, orange } from "../constants/color";
 import { AttachFile, Send } from "@mui/icons-material";
 import { InputBox } from "../components/styles/StyledComponents";
 import bgImg from "../assets/wallapaper.jpeg";
 import FileMenu from "../components/dialogs/FileMenu";
-import { sampleMessage } from "../components/constants/sampleData";
+import { sampleMessage } from "../constants/sampleData";
 import Message from "../components/shared/Message";
 
 const user = {

@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { dashboardData } from "../../components/constants/sampleData";
+import { dashboardData } from "../../constants/sampleData";
 import AdminLayout from "../../components/layout/AdminLayout";
 import AvatarCard from "../../components/shared/AvatarCard";
 import Table from "../../components/shared/Table";

@@ -5,9 +5,9 @@ import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Header from "./Header";
 import { Grid } from "@mui/material";
-import { chatSample } from "../constants/sampleData";
+import { chatSample } from "../../constants/sampleData";
 import Profile from "../specific/Profile";
-import { lightOrange } from "../constants/color";
+import { lightOrange } from "../../constants/color";
 
 const AppLayout = () => {
   return (WrappedComponent) => {

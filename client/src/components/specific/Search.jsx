@@ -10,7 +10,7 @@ import {
 import { Search as SearchIcon } from "@mui/icons-material";
 import UserItem from "../shared/UserItem";
 import { useState } from "react";
-import { sampleUsers } from "../constants/sampleData";
+import { sampleUsers } from "../../constants/sampleData";
 
 function Search() {
   const [users, setUsers] = useState(sampleUsers);

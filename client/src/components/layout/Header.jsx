@@ -15,7 +15,7 @@ import {
   Notifications,
   Search,
 } from "@mui/icons-material";
-import { orange } from "../constants/color";
+import { orange } from "../../constants/color";
 import { useNavigate } from "react-router-dom";
 import IconBtn from "../shared/IconBtn";
 
