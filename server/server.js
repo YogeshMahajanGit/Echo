@@ -13,6 +13,7 @@ import { v4 as uuid } from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config({
   path: "./.env",
@@ -42,8 +43,14 @@ const PORT = process.env.PORT || 3000;
 const adminSecretKey = process.env.ADMIN_SECRET_KEY;
 const userSocketIDs = new Map();
 
-//DB connection
+//DB connection & cloudinary config
 connectDB(urlDB);
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Routes
 app.use("/api/v1/users", userRouter);

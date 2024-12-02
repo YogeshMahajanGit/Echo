@@ -2,27 +2,31 @@ import { compare } from "bcrypt";
 import { User } from "../models/userModel.js";
 import { Chat } from "../models/chatModel.js";
 import { Request } from "../models/requestModel.js";
-import { emitEvent, sendWebToken } from "../utils/features.js";
+import {
+  emitEvent,
+  sendWebToken,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { cookieOptions } from "../utils/features.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
-import { json } from "express";
 
-// create a new user
+// create a new user / register
 async function handleNewUser(req, res, next) {
   const { name, username, password, bio } = req.body;
 
   const file = req.file;
-
-  if (!file) return next(new ErrorHandler("Please Select Profile"));
 
   // Validation
   if (!name || !username || !password) {
     return next(new ErrorHandler("All fields are required"));
   }
 
-  let userName;
+  if (!file) return next(new ErrorHandler("Please Select Profile"));
+
+  // check if user exists
+  let userName = username;
 
   try {
     userName = await User.findOne({ name });
@@ -36,9 +40,13 @@ async function handleNewUser(req, res, next) {
     return next(new ErrorHandler("Error while checking existing user"));
   }
 
+  //upload avatar image on cloudinary
+
+  const result = await uploadFilesToCloudinary([file]);
+
   const avatar = {
-    public_id: "ddddcd",
-    url: "http://kk",
+    public_id: result[0].public_id,
+    url: result[0].url,
   };
 
   let user;

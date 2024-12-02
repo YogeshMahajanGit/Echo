@@ -6,3 +6,7 @@ export const getOtherMember = (members, userId) => {
 
 export const getSockets = (users = []) =>
   users.map((user) => userSocketIDs.get(user._id.toString()));
+
+//  binary data into ASCII text
+export const getBase64 = (file) =>
+  `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
