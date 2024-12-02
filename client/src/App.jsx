@@ -5,7 +5,7 @@ import LoadingGrid from "./components/shared/LoadingGrid";
 import axios from "axios";
 import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
-import userNotExist from "./redux/reducers/auth";
+import userNotExist, { userExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
 
 // dynamic import(loads on demand)
@@ -20,7 +20,7 @@ const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const MessageManagement = lazy(() => import("./pages/admin/MessageManagement"));
 const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const ChatManagement = lazy(() => import("./pages/admin/ChatManagement"));
-const hi = false;
+
 function App() {
   const { user, loader } = useSelector((state) => state.auth);
 
@@ -28,13 +28,12 @@ function App() {
 
   useEffect(() => {
     axios
-      .get(`${server}/api/v1/users/me`)
-      .then((res) => res.json())
-      .then((data) => console.log(data))
+      .get(`${server}/api/v1/users/me`, { withCredentials: true })
+      .then(({ data }) => dispatch(userExists(data.user)))
       .catch(() => dispatch(userNotExist()));
   }, [dispatch]);
 
-  return hi ? (
+  return loader ? (
     <LoadingGrid />
   ) : (
     <BrowserRouter>

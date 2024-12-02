@@ -273,7 +273,7 @@ function LoginPage() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={toggleLogin}
+                  onClick={handleSignUp}
                 >
                   Sign Up
                 </Button>
