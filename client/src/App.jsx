@@ -22,7 +22,7 @@ const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const ChatManagement = lazy(() => import("./pages/admin/ChatManagement"));
 
 function App() {
-  const { user, loader } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -33,9 +33,7 @@ function App() {
       .catch(() => dispatch(userNotExist()));
   }, [dispatch]);
 
-  return loader ? (
-    <LoadingGrid />
-  ) : (
+  return (
     <BrowserRouter>
       <Suspense fallback={<LoadingGrid />}>
         <Routes>
