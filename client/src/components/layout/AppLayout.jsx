@@ -4,10 +4,11 @@ import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Header from "./Header";
-import { Grid } from "@mui/material";
+import { Grid, Skeleton } from "@mui/material";
 import { chatSample } from "../../constants/sampleData";
 import Profile from "../specific/Profile";
 import { lightOrange } from "../../constants/color";
+import { useMyChatsQuery } from "../../redux/api/api";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -15,6 +16,11 @@ const AppLayout = () => {
       const InnerComponent = () => {
         const params = useParams();
         const chatId = params.chatId;
+
+        const { isLoading, data, isError, error, refetch } =
+          useMyChatsQuery("");
+
+        console.log(data);
 
         const handleDeleteChat = useCallback((e, _id, groupChat) => {
           // delete logic
@@ -35,11 +41,15 @@ const AppLayout = () => {
                   display: { xs: "none", sm: "block" },
                 }}
               >
-                <ChatList
-                  chats={chatSample}
-                  chatId={chatId}
-                  handleDeleteChat={handleDeleteChat}
-                />
+                {isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <ChatList
+                    chats={data?.chats}
+                    chatId={chatId}
+                    handleDeleteChat={handleDeleteChat}
+                  />
+                )}
               </Grid>
               <Grid
                 item
