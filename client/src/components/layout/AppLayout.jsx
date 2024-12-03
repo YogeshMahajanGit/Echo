@@ -1,14 +1,16 @@
 /* eslint-disable react/display-name */
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Header from "./Header";
-import { Grid, Skeleton } from "@mui/material";
-import { chatSample } from "../../constants/sampleData";
+import { Drawer, Grid, Skeleton } from "@mui/material";
 import Profile from "../specific/Profile";
 import { lightOrange } from "../../constants/color";
 import { useMyChatsQuery } from "../../redux/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsMobileMenu } from "../../redux/reducers/misc";
+import { useErrors } from "../../hooks/hook";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -16,21 +18,39 @@ const AppLayout = () => {
       const InnerComponent = () => {
         const params = useParams();
         const chatId = params.chatId;
+        const dispatch = useDispatch();
 
+        const { isMobileMenu } = useSelector((state) => state.misc);
         const { isLoading, data, isError, error, refetch } =
           useMyChatsQuery("");
 
-        console.log(data);
+        useErrors([{ isError, error }]);
 
         const handleDeleteChat = useCallback((e, _id, groupChat) => {
           // delete logic
           console.log("Deleting chat:", _id, groupChat);
         }, []);
 
+        const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
+
         return (
           <>
             <Title />
             <Header />
+
+            {isLoading ? (
+              <Skeleton />
+            ) : (
+              <Drawer open={isMobileMenu} onClose={handleMobileMenuClose}>
+                <ChatList
+                  w="70vw"
+                  chats={data?.chats}
+                  chatId={chatId}
+                  handleDeleteChat={handleDeleteChat}
+                />
+              </Drawer>
+            )}
+
             <Grid container sx={{ height: "calc(100vh - 4rem)" }}>
               <Grid
                 height={"100%"}

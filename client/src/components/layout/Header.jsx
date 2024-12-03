@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { server } from "../../constants/config";
 import { userNotExists } from "../../redux/reducers/auth";
 import toast from "react-hot-toast";
+import { setIsMobileMenu } from "../../redux/reducers/misc";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NotificationDialog = lazy(() => import("../specific/Notification"));
@@ -32,12 +33,12 @@ function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  //   const [mobile, setMobile] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [isNotification, setIsNotification] = useState(false);
   const [isNewGroup, setIsNewGroup] = useState(false);
 
-  function handleMobile() {}
+  const handleMobile = () => dispatch(setIsMobileMenu(true));
+
   function handleOpenSearchDialog() {
     setIsSearch((prev) => !prev);
   }
@@ -77,17 +78,6 @@ function Header() {
           }}
         >
           <Toolbar>
-            <Typography
-              variant="h5"
-              sx={{
-                // display: { xs: "none", sm: "block" },
-                letterSpacing: "0.2rem",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              Echo
-            </Typography>
             <Box
               sx={{
                 display: { xs: "block", sm: "none" },
@@ -97,6 +87,20 @@ function Header() {
                 <MenuIcon />
               </IconButton>
             </Box>
+            <Typography
+              variant="h5"
+              sx={{
+                // display: {  sm: "block" },
+                letterSpacing: "0.2rem",
+                fontSize: { xs: "20px" },
+                fontWeight: "600",
+                cursor: "pointer",
+                marginLeft: "1rem",
+              }}
+            >
+              Echo
+            </Typography>
+
             <Box sx={{ flexGrow: 1 }} />
             <Box>
               <IconBtn
