@@ -7,6 +7,7 @@ import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
 import userNotExist, { userExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
+import { SocketProvider } from "./socket";
 
 // dynamic import(loads on demand)
 const Home = lazy(() => import("./pages/HomePage"));
@@ -37,7 +38,13 @@ function App() {
     <BrowserRouter>
       <Suspense fallback={<LoadingGrid />}>
         <Routes>
-          <Route element={<ProtectRoute user={user} />}>
+          <Route
+            element={
+              <SocketProvider>
+                <ProtectRoute user={user} />
+              </SocketProvider>
+            }
+          >
             <Route path="/" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Group />} />

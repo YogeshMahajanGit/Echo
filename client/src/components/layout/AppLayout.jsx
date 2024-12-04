@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -10,21 +10,23 @@ import { lightOrange } from "../../constants/color";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobileMenu } from "../../redux/reducers/misc";
-import { useErrors } from "../../hooks/hook";
+import { useErrors } from "../../hooks/Hook.jsx";
+import { getSocket } from "../../socket.jsx";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
     return (props) => {
       const InnerComponent = () => {
+        const { isMobileMenu } = useSelector((state) => state.misc);
+        const { user } = useSelector((state) => state.auth);
+        const { isLoading, data, isError, error, refetch } =
+          useMyChatsQuery("");
+
         const params = useParams();
         const chatId = params.chatId;
         const dispatch = useDispatch();
-
-        const { isMobileMenu } = useSelector((state) => state.misc);
-        const { user } = useSelector((state) => state.auth);
-
-        const { isLoading, data, isError, error, refetch } =
-          useMyChatsQuery("");
+        const socket = getSocket();
+        console.log(socket.id);
 
         useErrors([{ isError, error }]);
 

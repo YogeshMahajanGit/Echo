@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import { ErrorHandler } from "../utils/utility.js";
 import { adminSecretKey } from "../server.js";
+import { APP_TOKEN } from "../config/config.js";
+import { User } from "../models/userModel.js";
 
 function authenticate(req, res, next) {
   //Get token
-  const token = req.cookies["echo-token"];
+  const token = req.cookies[APP_TOKEN];
 
   if (!token) {
     return next(
@@ -40,4 +42,26 @@ function authenticateAdmin(req, res, next) {
   next();
 }
 
-export { authenticate, authenticateAdmin };
+async function socketAuthenticate(err, socket, next) {
+  try {
+    if (err) return next(err);
+
+    const authToken = socket.request.cookies[APP_TOKEN];
+    if (!authToken) return next(new ErrorHandler("Access denied!"), 401);
+
+    const decodedData = jwt.verify(authToken, process.env.JWT_SECRET);
+
+    const user = await User.findById(decodedData._id);
+
+    if (!user) return next(new ErrorHandler("Access denied!"), 401);
+
+    socket.user = user;
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    next(new ErrorHandler("Access denied!", 401));
+  }
+}
+
+export { authenticate, authenticateAdmin, socketAuthenticate };

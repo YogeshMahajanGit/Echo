@@ -1,19 +1,21 @@
 import express from "express";
+import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import chatRouter from "./routes/chatRoutes.js";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 import adminRouter from "./routes/adminRoutes.js";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { v4 as uuid } from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
-import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
+import { corsOptions } from "./config/config.js";
+import { socketAuthenticate } from "./middlewares/authenticate.js";
 
 dotenv.config({
   path: "./.env",
@@ -21,21 +23,14 @@ dotenv.config({
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {
+  cors: corsOptions,
+});
 
 // middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:4173",
-      process.env.CLIENT_URL,
-    ],
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 const urlDB = process.env.MONGO_URI;
 const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
@@ -63,14 +58,19 @@ app.get("/", (req, res) => {
 });
 
 // socket middleware / connect-auth
-io.use((socket, next) => {});
+io.use((socket, next) => {
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err) => await socketAuthenticate(err, socket, next)
+  );
+});
 
 //New client socket connection
 io.on("connection", (socket) => {
-  const user = {
-    _id: "dnd",
-    name: "wakanda",
-  };
+  // find user to connect
+  const user = socket.user;
+
   // map id
   userSocketIDs.set(user._id.toString(), socket.id);
 
