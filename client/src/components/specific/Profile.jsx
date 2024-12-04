@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Avatar, Stack, Typography } from "@mui/material";
 import {
   AlternateEmail as UsernameIcon,
@@ -5,11 +6,13 @@ import {
 } from "@mui/icons-material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import moment from "moment";
+import { transformImage } from "../../lib/features";
 
-function Profile() {
+function Profile({ user }) {
   return (
     <Stack alignItems={"center"} spacing={"2rem"}>
       <Avatar
+        src={transformImage(user?.avatar?.url)}
         sx={{
           width: 200,
           height: 200,
@@ -18,20 +21,20 @@ function Profile() {
           border: "5px solid white",
         }}
       />
-      <ProfileCard heading={"Bio"} text={"hhg cdrty bgtresdf jytfg"} />
+      <ProfileCard heading={"Bio"} text={user?.bio} />
       <ProfileCard
         heading={"username"}
-        text={"mahajan"}
+        text={user?.username}
         Icon={<UsernameIcon />}
       />
       <ProfileCard
         heading={"Name"}
-        text={"Yogesh dilip mahajan"}
+        text={user?.name}
         Icon={<AccountCircleIcon />}
       />
       <ProfileCard
         heading={"Joined"}
-        text={moment("2023-08-10T18:30:00.000Z").fromNow()}
+        text={moment(user.createdAt).fromNow()}
         Icon={<CalendarMonth />}
       />
     </Stack>

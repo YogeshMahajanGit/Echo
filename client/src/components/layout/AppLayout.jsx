@@ -21,6 +21,8 @@ const AppLayout = () => {
         const dispatch = useDispatch();
 
         const { isMobileMenu } = useSelector((state) => state.misc);
+        const { user } = useSelector((state) => state.auth);
+
         const { isLoading, data, isError, error, refetch } =
           useMyChatsQuery("");
 
@@ -92,7 +94,7 @@ const AppLayout = () => {
                   padding: "2rem",
                 }}
               >
-                <Profile />
+                <Profile user={user} />
               </Grid>
             </Grid>
           </>
