@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Add, Remove } from "@mui/icons-material";
 import {
   Avatar,
@@ -37,7 +38,7 @@ function UserItem({
           width={"100%"}
           {...styling}
         >
-          <Avatar />
+          <Avatar src={avatar} />
           <Typography
             variant="body1"
             sx={{

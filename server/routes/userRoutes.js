@@ -43,7 +43,6 @@ userRouter.get("/search", handleSearchUser);
 
 userRouter.put(
   "/send-request",
-
   requestValidator(),
   handleValidator,
   handleFriendRequest
@@ -51,7 +50,6 @@ userRouter.put(
 
 userRouter.put(
   "/accept-request",
-
   acceptRequestValidator(),
   handleValidator,
   handleAcceptFriendRequest
