@@ -34,6 +34,25 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    // get notification of other user endpoint
+    getNotification: builder.query({
+      query: () => ({
+        url: "/users/notifications",
+        credentials: "include",
+      }),
+      //no caching
+      keepUnusedDataFor: 0,
+    }),
+    // accept request endpoint
+    acceptFriendRequest: builder.mutation({
+      query: (data) => ({
+        url: "/users/accept-request",
+        method: "PUT",
+        credentials: "include",
+        body: data,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -43,4 +62,6 @@ export const {
   useMyChatsQuery,
   useLazySearchUserQuery,
   useSendFriendRequestMutation,
+  useGetNotificationQuery,
+  useAcceptFriendRequestMutation,
 } = api;

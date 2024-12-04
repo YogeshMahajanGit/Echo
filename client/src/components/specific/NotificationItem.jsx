@@ -38,6 +38,7 @@ function NotificationItem({ sender, _id, handler }) {
           >
             {name}
           </Typography>
+
           <Stack spacing={"10px"} direction={{ xs: "column", sm: "row" }}>
             <Button
               variant="contained"
