@@ -16,17 +16,18 @@ import {
   useLazySearchUserQuery,
   useSendFriendRequestMutation,
 } from "../../redux/api/api";
-import toast from "react-hot-toast";
+import { useAsyncMutation } from "../../hooks/Hook";
 
 function Search() {
   const [users, setUsers] = useState([]);
   const searchValue = useInputValidation("");
   const { isSearch } = useSelector((state) => state.misc);
   const [searchUser] = useLazySearchUserQuery();
-  const [sendFriendRequest] = useSendFriendRequestMutation();
+  const [sendFriendRequest, isLoadingSendfriendRequest] = useAsyncMutation(
+    useSendFriendRequestMutation
+  );
 
   const dispatch = useDispatch();
-  let isLoadingSendfriendRequest = false;
 
   // search for users
   useEffect(() => {
@@ -43,17 +44,7 @@ function Search() {
 
   // function for send request
   async function handlerAddFriend(id) {
-    try {
-      const res = await sendFriendRequest({ userId: id });
-      if (res.data) {
-        toast.success("Request sent successfully");
-        console.log(res.data);
-      } else {
-        toast.error(res?.error?.data?.message || "Request failed");
-      }
-    } catch (error) {
-      toast.error("Something went wrong", error.message);
-    }
+    await sendFriendRequest("Sending friend request...", { userId: id });
   }
   const handleSearchClose = () => dispatch(setIsSearch(false));
 
