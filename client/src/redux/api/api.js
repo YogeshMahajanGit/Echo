@@ -24,6 +24,7 @@ const api = createApi({
       }),
       providesTags: ["User"],
     }),
+
     // send request endpoint
     sendFriendRequest: builder.mutation({
       query: (data) => ({
@@ -34,6 +35,7 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
     // get notification of other user endpoint
     getNotification: builder.query({
       query: () => ({
@@ -43,6 +45,7 @@ const api = createApi({
       //no caching
       keepUnusedDataFor: 0,
     }),
+
     // accept request endpoint
     acceptFriendRequest: builder.mutation({
       query: (data) => ({
@@ -52,6 +55,20 @@ const api = createApi({
         body: data,
       }),
       invalidatesTags: ["Chat"],
+    }),
+
+    // get chat details endpoint
+    chatDetails: builder.query({
+      query: ({ chatId, populate = false }) => {
+        let url = `chat/${chatId}`;
+        if (populate) url += "populate=true";
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
     }),
   }),
 });
@@ -64,4 +81,5 @@ export const {
   useSendFriendRequestMutation,
   useGetNotificationQuery,
   useAcceptFriendRequestMutation,
+  useChatDetailsQuery,
 } = api;

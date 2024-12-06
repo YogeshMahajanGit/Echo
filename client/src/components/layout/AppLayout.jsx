@@ -26,7 +26,6 @@ const AppLayout = () => {
         const chatId = params.chatId;
         const dispatch = useDispatch();
         const socket = getSocket();
-        console.log(socket.id);
 
         useErrors([{ isError, error }]);
 
@@ -82,9 +81,9 @@ const AppLayout = () => {
                 md={5}
                 lg={6}
                 height={"100%"}
-                sx={{ border: `1px solid ${lightOrange}` }}
+                // sx={{ border: `1px solid ${lightOrange}` }}
               >
-                <WrappedComponent {...props} />
+                <WrappedComponent {...props} user={user} chatId={chatId} />
               </Grid>
               <Grid
                 item

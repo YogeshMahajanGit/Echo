@@ -74,9 +74,8 @@ io.on("connection", (socket) => {
   // map id
   userSocketIDs.set(user._id.toString(), socket.id);
 
-  console.log(userSocketIDs);
-
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
+    // msg send to client
     const sendRealMessage = {
       _id: uuid(),
       content: message,
@@ -88,6 +87,7 @@ io.on("connection", (socket) => {
       createAt: new Date().toISOString(),
     };
 
+    // msg save in DB
     const messageForDB = {
       content: message,
       sender: user._id,
@@ -102,6 +102,7 @@ io.on("connection", (socket) => {
     });
     io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
 
+    // create msg
     try {
       await Message.create(messageForDB);
     } catch (error) {
@@ -118,7 +119,7 @@ io.on("connection", (socket) => {
 // Global error handler middleware
 app.use(globalErrorHandler);
 
-// start server
+// Start server
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT} in ${envMode} Mode 🚀`);
 });

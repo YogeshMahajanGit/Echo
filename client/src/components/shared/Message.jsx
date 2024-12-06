@@ -7,6 +7,7 @@ import RenderAttachment from "./RenderAttachment";
 
 function Message({ message, user }) {
   const { sender, content, attachments = [], createAt } = message;
+
   const sameSender = sender?._id == user?._id;
 
   const timeAgo = moment(createAt).fromNow();
