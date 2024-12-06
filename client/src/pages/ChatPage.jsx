@@ -9,22 +9,38 @@ import FileMenu from "../components/dialogs/FileMenu";
 import Message from "../components/shared/Message";
 import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
-import { useChatDetailsQuery } from "../redux/api/api";
+import { useChatDetailsQuery, useGetMyMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
+import { useInfiniteScrollTop } from "6pp";
 
 function ChatPage({ chatId, user }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [page, setPage] = useState(1);
 
-  const containerRef = useRef(null);
   const socket = getSocket();
-  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
+  const containerRef = useRef(null);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+  const previousChatChuck = useGetMyMessagesQuery({ chatId, page });
+
+  //Infinite Scroll
+  const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
+    containerRef,
+    previousChatChuck.data?.totalPages,
+    page,
+    setPage,
+    previousChatChuck.data?.messages
+  );
+
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: previousChatChuck.isError, error: previousChatChuck.error },
+  ];
+
   const members = chatDetails?.data?.chat?.members;
 
   const newMessages = useCallback((data) => {
-    // console.log(data);
     setMessages((prev) => [...prev, data.message]);
   }, []);
 
@@ -33,6 +49,9 @@ function ChatPage({ chatId, user }) {
   // call hook
   useSocketEvents(socket, eventHandle);
   useErrors(errors);
+
+  // collect all messages
+  const allMessages = [...oldMessages, ...messages];
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -64,7 +83,7 @@ function ChatPage({ chatId, user }) {
           overflowY: "auto",
         }}
       >
-        {messages.map((chat) => (
+        {allMessages.map((chat) => (
           <Message message={chat} user={user} key={chat._id} />
         ))}
       </Stack>

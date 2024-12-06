@@ -486,7 +486,7 @@ async function handleGetMessages(req, res, next) {
     const chatId = req.params.id;
     const { page = 1 } = req.query;
 
-    const perPage = 20;
+    const perPage = 10;
     const skip = (page - 1) * perPage;
 
     //resolve promise for chat pages
