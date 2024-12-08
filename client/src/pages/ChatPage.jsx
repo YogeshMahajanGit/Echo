@@ -12,14 +12,18 @@ import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery, useGetMyMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useInfiniteScrollTop } from "6pp";
+import { useDispatch } from "react-redux";
+import { setIsFile } from "../redux/reducers/misc";
 
 function ChatPage({ chatId, user }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
+  const [fileAnchor, setFileAnchor] = useState(null);
 
   const socket = getSocket();
   const containerRef = useRef(null);
+  const dispatch = useDispatch();
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const previousChatChuck = useGetMyMessagesQuery({ chatId, page });
@@ -52,6 +56,13 @@ function ChatPage({ chatId, user }) {
 
   // collect all messages
   const allMessages = [...oldMessages, ...messages];
+
+  // functions
+  function handleFileOpen(e) {
+    e.preventDefault();
+    dispatch(setIsFile(true));
+    setFileAnchor(e.currentTarget);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -102,7 +113,7 @@ function ChatPage({ chatId, user }) {
           padding={"0.8rem"}
           spacing={1}
         >
-          <IconButton>
+          <IconButton onClick={handleFileOpen}>
             <AttachFile />
           </IconButton>
           <InputBox
@@ -130,8 +141,8 @@ function ChatPage({ chatId, user }) {
             <Send />
           </IconButton>
         </Stack>
-        <FileMenu />
       </form>
+      <FileMenu anchorEl={fileAnchor} chatId={chatId} />
     </>
   );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { IconButton, Tooltip } from "@mui/material";
 
 function IconBtn({ title, icon, onClick }) {

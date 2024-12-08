@@ -21,7 +21,11 @@ export const fileFormat = (url = "") => {
   return "file";
 };
 
-export const transformImage = (url = "", width = 100) => url;
+export const transformImage = (url = "", width = 100) => {
+  const newUrl = url.replace("upload", `upload/dpr_auto/w_${width}/`);
+
+  return newUrl;
+};
 
 export const getLastWeek = () => {
   const currentDate = moment();
