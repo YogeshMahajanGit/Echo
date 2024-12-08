@@ -28,6 +28,7 @@ import {
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducers/misc";
+import { resetNotifications } from "../../redux/reducers/chat";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NotificationDialog = lazy(() => import("../specific/Notification"));
@@ -36,6 +37,7 @@ const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 function Header() {
   const [isNewGroup, setIsNewGroup] = useState(false);
   const { isSearch, isNotification } = useSelector((state) => state.misc);
+  const { notificationCount } = useSelector((state) => state.chat);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,11 +45,14 @@ function Header() {
   const handleMobile = () => dispatch(setIsMobileMenu(true));
   const handleOpenSearchDialog = () => dispatch(setIsSearch(true));
 
+  const handleNotifications = () => {
+    dispatch(setIsNotification(true));
+    dispatch(resetNotifications());
+  };
+
   function handleOpenNewGroup() {
     setIsNewGroup((prev) => !prev);
   }
-
-  const handleNotifications = () => dispatch(setIsNotification(true));
 
   async function handleLogout() {
     try {
@@ -121,6 +126,7 @@ function Header() {
                 title={"Notifications"}
                 icon={<Notifications />}
                 onClick={handleNotifications}
+                value={notificationCount}
               />
               <IconBtn
                 title={"Logout"}

@@ -6,12 +6,13 @@ import ChatList from "../specific/ChatList";
 import Header from "./Header";
 import { Drawer, Grid, Skeleton } from "@mui/material";
 import Profile from "../specific/Profile";
-import { lightOrange } from "../../constants/color";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobileMenu } from "../../redux/reducers/misc";
-import { useErrors } from "../../hooks/Hook.jsx";
+import { useErrors, useSocketEvents } from "../../hooks/Hook.jsx";
 import { getSocket } from "../../socket.jsx";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events.js";
+import { incrementNotifications } from "../../redux/reducers/chat.js";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -27,6 +28,18 @@ const AppLayout = () => {
         const dispatch = useDispatch();
         const socket = getSocket();
 
+        const newMessagesAlert = useCallback(() => {}, []);
+        const newMessagesReq = useCallback(() => {
+          dispatch(incrementNotifications());
+        }, [dispatch]);
+
+        const eventHandlers = {
+          [NEW_MESSAGE_ALERT]: newMessagesAlert,
+          [NEW_REQUEST]: newMessagesReq,
+        };
+
+        // call hook
+        useSocketEvents(socket, eventHandlers);
         useErrors([{ isError, error }]);
 
         const handleDeleteChat = useCallback((e, _id, groupChat) => {
@@ -35,7 +48,6 @@ const AppLayout = () => {
         }, []);
 
         const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
-
         return (
           <>
             <Title />
@@ -74,15 +86,7 @@ const AppLayout = () => {
                   />
                 )}
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={8}
-                md={5}
-                lg={6}
-                height={"100%"}
-                // sx={{ border: `1px solid ${lightOrange}` }}
-              >
+              <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
                 <WrappedComponent {...props} user={user} chatId={chatId} />
               </Grid>
               <Grid

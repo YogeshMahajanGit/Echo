@@ -1,6 +1,6 @@
 import { IconButton, Skeleton, Stack } from "@mui/material";
 import AppLayout from "../components/layout/AppLayout";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { grayColor, orange } from "../constants/color";
 import { AttachFile, Send } from "@mui/icons-material";
 import { InputBox } from "../components/styles/StyledComponents";
@@ -44,9 +44,23 @@ function ChatPage({ chatId, user }) {
 
   const members = chatDetails?.data?.chat?.members;
 
-  const newMessages = useCallback((data) => {
-    setMessages((prev) => [...prev, data.message]);
-  }, []);
+  useEffect(() => {
+    return () => {
+      setMessages([]);
+      setMessage("");
+      setOldMessages([]);
+      setPage(1);
+    };
+  }, [chatId]);
+
+  const newMessages = useCallback(
+    (data) => {
+      if (data.chaId !== chatId) return;
+
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
 
   const eventHandle = { [NEW_MESSAGE]: newMessages };
 
