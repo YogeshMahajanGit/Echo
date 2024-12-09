@@ -14,6 +14,7 @@ import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
 import { setIsFile } from "../redux/reducers/misc";
+import { removeMessagesAlert } from "../redux/reducers/chat";
 
 function ChatPage({ chatId, user }) {
   const [message, setMessage] = useState("");
@@ -45,13 +46,14 @@ function ChatPage({ chatId, user }) {
   const members = chatDetails?.data?.chat?.members;
 
   useEffect(() => {
+    dispatch(removeMessagesAlert(chatId));
     return () => {
       setMessages([]);
       setMessage("");
       setOldMessages([]);
       setPage(1);
     };
-  }, [chatId]);
+  }, [chatId, setOldMessages, dispatch]);
 
   const newMessages = useCallback(
     (data) => {

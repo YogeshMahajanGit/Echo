@@ -7,20 +7,25 @@ function ChatList({
   chats = [],
   chatId,
   onlineUsers = [],
-  newMessagesAlert = [{ chatId: "", count: 4 }],
+  newMessagesAlert = [
+    {
+      chatId: "",
+      count: 0,
+    },
+  ],
   handleDeleteChat,
 }) {
   return (
-    <Stack width={w} overflow={"auto"} height={"100%"}>
-      {chats.map((data, index) => {
+    <Stack width={w} overflow={"auto"} direction={"column"} height={"100%"}>
+      {chats?.map((data, index) => {
         const { avatar, _id, name, groupChat, members } = data;
-
         const newMessageAlert = newMessagesAlert.find(
           ({ chatId }) => chatId === _id
         );
 
-        // eslint-disable-next-line no-unused-vars
-        const isOnline = members?.some((members) => onlineUsers.includes(_id));
+        const isOnline = members?.some((members) =>
+          onlineUsers.includes(members)
+        );
 
         return (
           <ChatItem

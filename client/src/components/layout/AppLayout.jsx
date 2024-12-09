@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -12,7 +12,11 @@ import { setIsMobileMenu } from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/Hook.jsx";
 import { getSocket } from "../../socket.jsx";
 import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events.js";
-import { incrementNotifications } from "../../redux/reducers/chat.js";
+import {
+  incrementNotifications,
+  setNewMessagesAlert,
+} from "../../redux/reducers/chat.js";
+import { actionsFromLocalStorage } from "../../lib/features.js";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -20,6 +24,8 @@ const AppLayout = () => {
       const InnerComponent = () => {
         const { isMobileMenu } = useSelector((state) => state.misc);
         const { user } = useSelector((state) => state.auth);
+        const { newMessagesAlert } = useSelector((state) => state.chat);
+
         const { isLoading, data, isError, error, refetch } =
           useMyChatsQuery("");
 
@@ -28,19 +34,33 @@ const AppLayout = () => {
         const dispatch = useDispatch();
         const socket = getSocket();
 
-        const newMessagesAlert = useCallback(() => {}, []);
-        const newMessagesReq = useCallback(() => {
+        const newMessageAlertListener = useCallback(
+          (data) => {
+            if (data.chatId === chatId) return;
+            dispatch(setNewMessagesAlert(data));
+          },
+          [chatId, dispatch]
+        );
+
+        const newRequestListener = useCallback(() => {
           dispatch(incrementNotifications());
         }, [dispatch]);
 
         const eventHandlers = {
-          [NEW_MESSAGE_ALERT]: newMessagesAlert,
-          [NEW_REQUEST]: newMessagesReq,
+          [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+          [NEW_REQUEST]: newRequestListener,
         };
 
         // call hook
         useSocketEvents(socket, eventHandlers);
         useErrors([{ isError, error }]);
+
+        useEffect(() => {
+          actionsFromLocalStorage({
+            key: NEW_MESSAGE_ALERT,
+            value: newMessagesAlert,
+          });
+        }, [newMessagesAlert]);
 
         const handleDeleteChat = useCallback((e, _id, groupChat) => {
           // delete logic
@@ -52,7 +72,6 @@ const AppLayout = () => {
           <>
             <Title />
             <Header />
-
             {isLoading ? (
               <Skeleton />
             ) : (
@@ -62,6 +81,7 @@ const AppLayout = () => {
                   chats={data?.chats}
                   chatId={chatId}
                   handleDeleteChat={handleDeleteChat}
+                  newMessagesAlert={newMessagesAlert}
                 />
               </Drawer>
             )}
@@ -83,6 +103,7 @@ const AppLayout = () => {
                     chats={data?.chats}
                     chatId={chatId}
                     handleDeleteChat={handleDeleteChat}
+                    newMessagesAlert={newMessagesAlert}
                   />
                 )}
               </Grid>

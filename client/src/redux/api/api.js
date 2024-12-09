@@ -77,7 +77,7 @@ const api = createApi({
         url: `chats/message/${chatId}?page=${page}`,
         credentials: "include",
       }),
-      providesTags: ["Message"],
+      keepUnusedDataFor: 0,
     }),
 
     // send attachment endpoint
