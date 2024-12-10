@@ -6,9 +6,8 @@ const NEW_REQUEST = "NEW_REQUEST";
 
 // socket events
 const NEW_MESSAGE = "NEW_MESSAGE";
-
-// const START_TYPING = "START_TYPING";
-// const STOP_TYPING = "STOP_TYPING";
+const START_TYPING = "START_TYPING";
+const STOP_TYPING = "STOP_TYPING";
 
 // const CHAT_JOINED = "CHAT_JOINED";
 // const CHAT_LEAVED = "CHAT_LEAVED";
@@ -22,4 +21,6 @@ export {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
   NEW_MESSAGE,
+  START_TYPING,
+  STOP_TYPING,
 };

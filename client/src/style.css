@@ -3,7 +3,6 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  /* align-items: center; */
   margin-top: 300px;
 }
 .loader {
@@ -60,5 +59,55 @@
   87.6%,
   100% {
     background-position: 0% 0%, 0 0;
+  }
+}
+
+.chat-bubble {
+  background-color: #eef2ff;
+  padding: 12px 18px;
+  border-radius: 20px 20px 20px 0px;
+  width: 18%;
+  border: 1px solid #4f46e5;
+}
+.typing {
+  align-items: center;
+  display: flex;
+  height: 17px;
+}
+.typing .dot {
+  animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
+  background-color: #818cf8;
+  border-radius: 50%;
+  height: 7px;
+  margin-right: 4px;
+  vertical-align: middle;
+  width: 7px;
+  display: inline-block;
+}
+.typing .dot:nth-child(1) {
+  animation-delay: 200ms;
+}
+.typing .dot:nth-child(2) {
+  animation-delay: 300ms;
+}
+.typing .dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+.typing .dot:last-child {
+  margin-right: 0;
+}
+
+@keyframes mercuryTypingAnimation {
+  0% {
+    transform: translateY(0px);
+    background-color: #818cf8;
+  }
+  28% {
+    transform: translateY(-7px);
+    background-color: #4f46e5;
+  }
+  44% {
+    transform: translateY(0px);
+    background-color: #eef2ff;
   }
 }

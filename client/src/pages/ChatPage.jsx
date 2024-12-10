@@ -8,19 +8,24 @@ import bgImg from "../assets/wallapaper.jpeg";
 import FileMenu from "../components/dialogs/FileMenu";
 import Message from "../components/shared/Message";
 import { getSocket } from "../socket";
-import { NEW_MESSAGE } from "../constants/events";
+import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
 import { useChatDetailsQuery, useGetMyMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
 import { setIsFile } from "../redux/reducers/misc";
 import { removeMessagesAlert } from "../redux/reducers/chat";
+import TypingLoading from "../components/shared/TypingLoading";
 
 function ChatPage({ chatId, user }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [fileAnchor, setFileAnchor] = useState(null);
+  const [iamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeout = useRef(null);
+  const bottomRef = useRef(null);
 
   const socket = getSocket();
   const containerRef = useRef(null);
@@ -55,25 +60,28 @@ function ChatPage({ chatId, user }) {
     };
   }, [chatId, setOldMessages, dispatch]);
 
-  const newMessages = useCallback(
-    (data) => {
-      if (data.chaId !== chatId) return;
+  useEffect(() => {
+    if (bottomRef.current)
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-      setMessages((prev) => [...prev, data.message]);
-    },
-    [chatId]
-  );
+  // function handlers
+  function handleSendMessage(e) {
+    setMessage(e.target.value);
 
-  const eventHandle = { [NEW_MESSAGE]: newMessages };
+    if (!iamTyping) {
+      socket.emit(START_TYPING, { members, chatId });
+      setIamTyping(true);
+    }
 
-  // call hook
-  useSocketEvents(socket, eventHandle);
-  useErrors(errors);
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
 
-  // collect all messages
-  const allMessages = [...oldMessages, ...messages];
+    typingTimeout.current = setTimeout(() => {
+      socket.emit(STOP_TYPING, { members, chatId });
+      setIamTyping(false);
+    }, 2000);
+  }
 
-  // functions
   function handleFileOpen(e) {
     e.preventDefault();
     dispatch(setIsFile(true));
@@ -88,6 +96,45 @@ function ChatPage({ chatId, user }) {
     socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
   }
+
+  // All event Listeners
+  const newMessagesListener = useCallback(
+    (data) => {
+      if (data.chaId !== chatId) return;
+
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
+  const startTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      // console.log("s Typing...", data);
+      setUserTyping(true);
+    },
+    [chatId]
+  );
+  const stopTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      // console.log("ss Typing...", data);
+      setUserTyping(false);
+    },
+    [chatId]
+  );
+
+  const eventHandle = {
+    [NEW_MESSAGE]: newMessagesListener,
+    [START_TYPING]: startTypingListener,
+    [STOP_TYPING]: stopTypingListener,
+  };
+
+  // call hook
+  useSocketEvents(socket, eventHandle);
+  useErrors(errors);
+
+  // collect all messages
+  const allMessages = [...oldMessages, ...messages];
 
   return chatDetails.isLoading ? (
     <Skeleton />
@@ -113,6 +160,10 @@ function ChatPage({ chatId, user }) {
         {allMessages.map((chat) => (
           <Message message={chat} user={user} key={chat._id} />
         ))}
+
+        {userTyping && <TypingLoading />}
+
+        <div ref={bottomRef} />
       </Stack>
 
       <form
@@ -133,12 +184,9 @@ function ChatPage({ chatId, user }) {
             <AttachFile />
           </IconButton>
           <InputBox
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            sx={{
-              ":focus": "0.8px solid red",
-            }}
             placeholder="Type Message..."
+            value={message}
+            onChange={handleSendMessage}
           />
           <IconButton
             type="submit"
@@ -163,4 +211,4 @@ function ChatPage({ chatId, user }) {
   );
 }
 
-export default AppLayout()(ChatPage);
+export default AppLayout(ChatPage);
