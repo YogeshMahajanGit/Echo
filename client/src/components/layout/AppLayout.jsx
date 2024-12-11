@@ -1,4 +1,5 @@
 /* eslint-disable react/display-name */
+
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
@@ -34,6 +35,7 @@ const AppLayout = () => {
         const dispatch = useDispatch();
         const socket = getSocket();
 
+        // All event Listeners
         const newMessageAlertListener = useCallback(
           (data) => {
             if (data.chatId === chatId) return;
@@ -62,7 +64,7 @@ const AppLayout = () => {
           });
         }, [newMessagesAlert]);
 
-        const handleDeleteChat = useCallback((e, _id, groupChat) => {
+        const handleDeleteChat = useCallback((_e, _id, groupChat) => {
           // delete logic
           console.log("Deleting chat:", _id, groupChat);
         }, []);
@@ -131,5 +133,4 @@ const AppLayout = () => {
     };
   };
 };
-
 export default AppLayout;
