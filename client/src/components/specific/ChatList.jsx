@@ -26,7 +26,6 @@ function ChatList({
         const isOnline = members?.some((members) =>
           onlineUsers.includes(members)
         );
-
         return (
           <ChatItem
             index={index}

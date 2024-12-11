@@ -14,8 +14,6 @@ function ChatItem({
   sameSender,
   isOnline,
   newMessageAlert,
-  // eslint-disable-next-line no-unused-vars
-  index = 0,
   handleDeleteChat,
 }) {
   return (

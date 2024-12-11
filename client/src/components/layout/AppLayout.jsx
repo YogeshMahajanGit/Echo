@@ -1,5 +1,4 @@
 /* eslint-disable react/display-name */
-
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../shared/Title";
@@ -11,7 +10,7 @@ import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobileMenu } from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/Hook.jsx";
-import { getSocket } from "../../socket.jsx";
+import { useSocket } from "../../socket.jsx";
 import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events.js";
 import {
   incrementNotifications,
@@ -27,13 +26,12 @@ const AppLayout = () => {
         const { user } = useSelector((state) => state.auth);
         const { newMessagesAlert } = useSelector((state) => state.chat);
 
-        const { isLoading, data, isError, error, refetch } =
-          useMyChatsQuery("");
+        const { isLoading, data, isError, error } = useMyChatsQuery("");
 
         const params = useParams();
         const chatId = params.chatId;
         const dispatch = useDispatch();
-        const socket = getSocket();
+        const socket = useSocket();
 
         // All event Listeners
         const newMessageAlertListener = useCallback(

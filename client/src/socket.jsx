@@ -5,7 +5,7 @@ import { server } from "./constants/config";
 
 const SocketContext = createContext();
 
-const getSocket = () => useContext(SocketContext);
+const useSocket = () => useContext(SocketContext);
 
 // create socket provider
 const SocketProvider = ({ children }) => {
@@ -16,4 +16,4 @@ const SocketProvider = ({ children }) => {
   );
 };
 
-export { SocketProvider, getSocket };
+export { SocketProvider, useSocket };
