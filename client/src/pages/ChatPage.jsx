@@ -18,18 +18,20 @@ import { removeMessagesAlert } from "../redux/reducers/chat";
 import TypingLoading from "../components/shared/TypingLoading";
 
 function ChatPage({ chatId, user }) {
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [fileAnchor, setFileAnchor] = useState(null);
-  const [iamTyping, setIamTyping] = useState(false);
-  const [userTyping, setUserTyping] = useState(false);
-  const typingTimeout = useRef(null);
-  const bottomRef = useRef(null);
-
   const socket = useSocket();
   const containerRef = useRef(null);
   const dispatch = useDispatch();
+
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const [fileAnchor, setFileAnchor] = useState(null);
+  const [iamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+
+  const typingTimeout = useRef(null);
+  const bottomRef = useRef(null);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const previousChatChuck = useGetMyMessagesQuery({ chatId, page });
@@ -51,6 +53,7 @@ function ChatPage({ chatId, user }) {
   const members = chatDetails?.data?.chat?.members;
 
   useEffect(() => {
+    // socket.emit(CHAT_JOINED, { userId: user._id, members });
     dispatch(removeMessagesAlert(chatId));
     return () => {
       setMessages([]);
@@ -97,13 +100,6 @@ function ChatPage({ chatId, user }) {
     [STOP_TYPING]: stopTypingListener,
   };
 
-  // call hook
-  useSocketEvents(socket, eventHandle);
-  useErrors(errors);
-
-  // collect all messages
-  const allMessages = [...oldMessages, ...messages];
-
   // function handlers
   function handleSendMessage(e) {
     setMessage(e.target.value);
@@ -135,6 +131,13 @@ function ChatPage({ chatId, user }) {
     socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
   }
+
+  // call hook
+  useSocketEvents(socket, eventHandle);
+  useErrors(errors);
+
+  // collect all messages
+  const allMessages = [...oldMessages, ...messages];
 
   return chatDetails.isLoading ? (
     <Skeleton />
