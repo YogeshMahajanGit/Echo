@@ -7,8 +7,8 @@ import { InputBox } from "../components/styles/StyledComponents";
 import bgImg from "../assets/wallapaper.jpeg";
 import FileMenu from "../components/dialogs/FileMenu";
 import Message from "../components/shared/Message";
-import { useSocket } from "../socket";
-import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
+import { getSocket } from "../socket";
+import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery, useGetMyMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useInfiniteScrollTop } from "6pp";
@@ -60,10 +60,39 @@ function ChatPage({ chatId, user }) {
     };
   }, [chatId, setOldMessages, dispatch]);
 
-  useEffect(() => {
-    if (bottomRef.current)
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const newMessages = useCallback(
+    (data) => {
+      if (data.chaId !== chatId) return;
+
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
+
+  const eventHandle = { [NEW_MESSAGE]: newMessages };
+
+  // call hook
+  useSocketEvents(socket, eventHandle);
+  useErrors(errors);
+
+  // collect all messages
+  const allMessages = [...oldMessages, ...messages];
+
+  // functions
+  function handleFileOpen(e) {
+    e.preventDefault();
+    dispatch(setIsFile(true));
+    setFileAnchor(e.currentTarget);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!message.trim()) return;
+
+    // event trigger
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
+    setMessage("");
+  }
 
   // All event Listeners
   const newMessagesListener = useCallback(
@@ -103,38 +132,6 @@ function ChatPage({ chatId, user }) {
 
   // collect all messages
   const allMessages = [...oldMessages, ...messages];
-
-  // function handlers
-  function handleSendMessage(e) {
-    setMessage(e.target.value);
-
-    if (!iamTyping) {
-      socket.emit(START_TYPING, { members, chatId });
-      setIamTyping(true);
-    }
-
-    if (typingTimeout.current) clearTimeout(typingTimeout.current);
-
-    typingTimeout.current = setTimeout(() => {
-      socket.emit(STOP_TYPING, { members, chatId });
-      setIamTyping(false);
-    }, 2000);
-  }
-
-  function handleFileOpen(e) {
-    e.preventDefault();
-    dispatch(setIsFile(true));
-    setFileAnchor(e.currentTarget);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    // event trigger
-    socket.emit(NEW_MESSAGE, { chatId, members, message });
-    setMessage("");
-  }
 
   return chatDetails.isLoading ? (
     <Skeleton />
@@ -211,4 +208,4 @@ function ChatPage({ chatId, user }) {
   );
 }
 
-export default AppLayout()(ChatPage);
+export default AppLayout(ChatPage);
