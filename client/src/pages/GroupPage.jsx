@@ -21,8 +21,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import IconBtn from "../components/shared/IconBtn";
 import { lazy, Suspense, useEffect, useState } from "react";
 import GroupsList from "../components/specific/GroupsList";
-import { chatSample, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
+import {
+  useChatDetailsQuery,
+  useMyGroupsQuery,
+  useRenameGroupMutation,
+} from "../redux/api/api";
+import { useAsyncMutation, useErrors } from "../hooks/Hook";
+import LoadingGrid from "../components/shared/LoadingGrid";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/dialogs/ConfirmDeleteDialog")
@@ -36,6 +42,7 @@ const isAddMember = false;
 function GroupPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [members, setMembers] = useState([]);
   const [groupName, setGroupName] = useState("");
   const [groupNameUpdated, setGroupNameUpdated] = useState("");
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
@@ -43,17 +50,61 @@ function GroupPage() {
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
 
+  // fetch groups query
+  const myGroups = useMyGroupsQuery("");
+
+  const groupsDetails = useChatDetailsQuery(
+    { chatId, populate: true },
+    { skip: !chatId }
+  );
+
+  const [updateGroup, renameIsLoading] = useAsyncMutation(
+    useRenameGroupMutation
+  );
+
+  // handle error
+  const errors = [
+    {
+      isError: myGroups.isError,
+      errors: myGroups.error,
+    },
+    {
+      isError: groupsDetails.isError,
+      errors: groupsDetails.error,
+    },
+  ];
+
+  useErrors(errors);
+
   useEffect(() => {
-    setGroupName(`Group Name`);
-    setGroupNameUpdated("Group Name");
+    if (groupsDetails.data) {
+      setGroupName(groupsDetails.data.chat.name);
+      setGroupNameUpdated(groupsDetails.data.chat.name);
+      setMembers(groupsDetails.data.chat.members);
+    }
 
     return () => {
       setGroupName("");
       setGroupNameUpdated("");
+      setMembers([]);
       setIsEdit(false);
     };
-  }, [chatId]);
+  }, [groupsDetails.data]);
 
+  // useEffect(() => {
+  //   if (chatId) {
+  //     setGroupName(`Group Name ${chatId}`);
+  //     setGroupNameUpdated(`Group Name ${chatId}`);
+  //   }
+
+  //   return () => {
+  //     setGroupName("");
+  //     setGroupNameUpdated("");
+  //     setIsEdit(false);
+  //   };
+  // }, [chatId]);
+
+  // handlers
   function handleNavigateBack() {
     navigate("/");
   }
@@ -68,6 +119,7 @@ function GroupPage() {
 
   function handleUpdateGroupName() {
     setIsEdit(false);
+    updateGroup("Updating...", { chatId, name: groupNameUpdated });
   }
 
   function handleOpenConfirmDelete() {
@@ -90,7 +142,9 @@ function GroupPage() {
   function handleRemoveMember(id) {
     console.log("remove", id);
   }
-  return (
+  return myGroups.isLoading ? (
+    <LoadingGrid />
+  ) : (
     <Grid container height={"100vh"}>
       <Grid
         item
@@ -103,7 +157,7 @@ function GroupPage() {
         borderRight={"1px solid gray"}
         sm={4}
       >
-        <GroupsList myGroup={chatSample} chatId={chatId} />
+        <GroupsList myGroup={myGroups?.data?.groups} chatId={chatId} />
       </Grid>
       <Grid
         item
@@ -176,6 +230,7 @@ function GroupPage() {
                     title={"Done"}
                     icon={<Done />}
                     onClick={handleUpdateGroupName}
+                    disabled={renameIsLoading}
                   />
                 </>
               ) : (
@@ -184,6 +239,7 @@ function GroupPage() {
                   <IconBtn
                     title={"Edit"}
                     icon={<Edit />}
+                    disabled={renameIsLoading}
                     onClick={() => setIsEdit(true)}
                   />
                 </Stack>
@@ -210,7 +266,7 @@ function GroupPage() {
                 md: "1rem 4rem",
               }}
             >
-              {sampleUsers.map((user) => (
+              {members.map((user) => (
                 <UserItem
                   key={user._id}
                   user={user}
@@ -230,11 +286,11 @@ function GroupPage() {
               p={{
                 xs: "0",
                 sm: "1rem",
-                md: "1rem 4rem",
+                md: "1rem 2rem",
               }}
             >
               <Button
-                size="large"
+                size="small"
                 variant="contained"
                 startIcon={<Add />}
                 onClick={handleAddMember}
@@ -244,7 +300,7 @@ function GroupPage() {
               <Button
                 color="error"
                 variant="outlined"
-                size="large"
+                size="small"
                 startIcon={<Delete />}
                 onClick={handleOpenConfirmDelete}
               >
@@ -275,7 +331,11 @@ function GroupPage() {
         open={isMenuOpen}
         onClose={handleMenuClose}
       >
-        <GroupsList w={"50vw"} myGroup={chatSample} chatId={chatId} />
+        <GroupsList
+          w={"50vw"}
+          myGroup={myGroups?.data?.groups}
+          chatId={chatId}
+        />
       </Drawer>
     </Grid>
   );

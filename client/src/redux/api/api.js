@@ -61,7 +61,7 @@ const api = createApi({
     chatDetails: builder.query({
       query: ({ chatId, populate = false }) => {
         let url = `chats/${chatId}`;
-        if (populate) url += "populate=true";
+        if (populate) url += "?populate=true";
 
         return {
           url,
@@ -89,6 +89,51 @@ const api = createApi({
         body: data,
       }),
     }),
+
+    // get groups endpoint
+    myGroups: builder.query({
+      query: () => ({
+        url: "chats/my/groups",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
+
+    // get my frined endpoint
+    getFriend: builder.query({
+      query: (chatId) => {
+        let url = "users/friends";
+        if (chatId) url += `?chatId=${chatId}`;
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+
+    // create group endpoint
+    createNewGroup: builder.mutation({
+      query: ({ name, members }) => ({
+        url: `chats/newGroup`,
+        method: "POST",
+        credentials: "include",
+        body: { name, members },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // create group endpoint
+    renameGroup: builder.mutation({
+      query: ({ chatId, name }) => ({
+        url: `chats/${chatId}`,
+        method: "PUT",
+        credentials: "include",
+        body: { name },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -103,4 +148,8 @@ export const {
   useChatDetailsQuery,
   useGetMyMessagesQuery,
   useSendAttachmentsMutation,
+  useMyGroupsQuery,
+  useGetFriendQuery,
+  useCreateNewGroupMutation,
+  useRenameGroupMutation,
 } = api;

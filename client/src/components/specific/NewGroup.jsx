@@ -1,22 +1,46 @@
-/* eslint-disable no-unused-vars */
 import {
   Button,
   Dialog,
   DialogTitle,
+  Skeleton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useInputValidation } from "6pp";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useCreateNewGroupMutation,
+  useGetFriendQuery,
+} from "../../redux/api/api";
+import { useAsyncMutation, useErrors } from "../../hooks/Hook";
+import { setIsNewGroup } from "../../redux/reducers/misc";
+import toast from "react-hot-toast";
 
 function NewGroup() {
-  const [members, setMembers] = useState(sampleUsers);
+  const { isNewGroup } = useSelector((state) => state.misc);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
+  const dispatch = useDispatch();
   const groupName = useInputValidation("");
+
+  // fetch friend
+  const { isError, isLoading, error, data } = useGetFriendQuery();
+
+  const [newGroup, groupIsLoading] = useAsyncMutation(
+    useCreateNewGroupMutation
+  );
+
+  const errors = [
+    {
+      isError,
+      error,
+    },
+  ];
+
+  useErrors(errors);
 
   function handlerSelectMembers(id) {
     setSelectedMembers((prev) =>
@@ -26,11 +50,26 @@ function NewGroup() {
     );
   }
 
-  function handleCreate() {}
-  function handleClodeDialog() {}
+  function handleCreateGroup() {
+    if (!groupName.value) return toast.error("Group name is required");
+
+    if (selectedMembers.length < 2)
+      return toast.error("Please select At least 3 members");
+
+    // create a new group
+    newGroup("Creating group", {
+      name: groupName.value,
+      members: selectedMembers,
+    });
+
+    handleClodeDialog();
+  }
+  function handleClodeDialog() {
+    dispatch(setIsNewGroup(false));
+  }
 
   return (
-    <Dialog open onClose={handleClodeDialog}>
+    <Dialog open={isNewGroup} onClose={handleClodeDialog}>
       <Stack spacing={2} padding={{ xs: "1rem", sm: "2rem" }} width={"25rem"}>
         <DialogTitle variant="h5" textAlign={"center"}>
           New Group
@@ -45,20 +84,28 @@ function NewGroup() {
 
         <Typography variant="body1">Members</Typography>
         <Stack>
-          {members.map((user) => (
-            <UserItem
-              key={user._id}
-              user={user}
-              handler={handlerSelectMembers}
-              isAdded={selectedMembers.includes(user._id)}
-            />
-          ))}
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            data?.friends?.map((user) => (
+              <UserItem
+                key={user._id}
+                user={user}
+                handler={handlerSelectMembers}
+                isAdded={selectedMembers.includes(user._id)}
+              />
+            ))
+          )}
         </Stack>
         <Stack direction={"row"} justifyContent={"space-evenly"}>
-          <Button variant="contained" onClick={handleCreate}>
+          <Button
+            variant="outlined"
+            onClick={handleCreateGroup}
+            disabled={groupIsLoading}
+          >
             Create
           </Button>
-          <Button color="error" variant="outlined">
+          <Button color="error" variant="text" onClick={handleClodeDialog}>
             Cancel
           </Button>
         </Stack>

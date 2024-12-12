@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense } from "react";
 import {
   AppBar,
   Backdrop,
@@ -25,6 +25,7 @@ import { userNotExists } from "../../redux/reducers/auth";
 import toast from "react-hot-toast";
 import {
   setIsMobileMenu,
+  setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducers/misc";
@@ -35,8 +36,9 @@ const NotificationDialog = lazy(() => import("../specific/Notification"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 function Header() {
-  const [isNewGroup, setIsNewGroup] = useState(false);
-  const { isSearch, isNotification } = useSelector((state) => state.misc);
+  const { isSearch, isNotification, isNewGroup } = useSelector(
+    (state) => state.misc
+  );
   const { notificationCount } = useSelector((state) => state.chat);
 
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ function Header() {
   };
 
   function handleOpenNewGroup() {
-    setIsNewGroup((prev) => !prev);
+    dispatch(setIsNewGroup(true));
   }
 
   async function handleLogout() {
