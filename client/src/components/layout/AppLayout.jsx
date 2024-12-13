@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 
 import { useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Header from "./Header";
@@ -35,6 +35,7 @@ const AppLayout = () => {
           useMyChatsQuery("");
 
         const params = useParams();
+        const navigate = useNavigate();
         const chatId = params.chatId;
         const dispatch = useDispatch();
         const socket = useSocket();
@@ -54,7 +55,8 @@ const AppLayout = () => {
 
         const refetchListener = useCallback(() => {
           refetch();
-        }, [refetch]);
+          navigate("/");
+        }, [refetch, navigate]);
 
         const eventHandlers = {
           [NEW_MESSAGE_ALERT]: newMessageAlertListener,

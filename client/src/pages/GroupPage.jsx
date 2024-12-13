@@ -2,6 +2,7 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   Grid,
   Stack,
@@ -24,11 +25,15 @@ import GroupsList from "../components/specific/GroupsList";
 import UserItem from "../components/shared/UserItem";
 import {
   useChatDetailsQuery,
+  useDeleteGroupMutation,
   useMyGroupsQuery,
+  useRemoveGroupMemberMutation,
   useRenameGroupMutation,
 } from "../redux/api/api";
 import { useAsyncMutation, useErrors } from "../hooks/Hook";
 import LoadingGrid from "../components/shared/LoadingGrid";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsAddMember } from "../redux/reducers/misc";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/dialogs/ConfirmDeleteDialog")
@@ -37,8 +42,6 @@ const AddMemberDialog = lazy(() =>
   import("../components/dialogs/AddMemberDialog")
 );
 
-const isAddMember = false;
-
 function GroupPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -46,9 +49,11 @@ function GroupPage() {
   const [groupName, setGroupName] = useState("");
   const [groupNameUpdated, setGroupNameUpdated] = useState("");
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
-
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { isAddMember } = useSelector((state) => state.misc);
 
   // fetch groups query
   const myGroups = useMyGroupsQuery("");
@@ -62,6 +67,12 @@ function GroupPage() {
     useRenameGroupMutation
   );
 
+  const [removeMember, removeIsLoading] = useAsyncMutation(
+    useRemoveGroupMemberMutation
+  );
+  const [deleteGroup, deleteGroupIsLoading] = useAsyncMutation(
+    useDeleteGroupMutation
+  );
   // handle error
   const errors = [
     {
@@ -91,18 +102,18 @@ function GroupPage() {
     };
   }, [groupsDetails.data]);
 
-  // useEffect(() => {
-  //   if (chatId) {
-  //     setGroupName(`Group Name ${chatId}`);
-  //     setGroupNameUpdated(`Group Name ${chatId}`);
-  //   }
+  useEffect(() => {
+    if (chatId) {
+      setGroupName(`Group Name`);
+      setGroupNameUpdated(`Group Name`);
+    }
 
-  //   return () => {
-  //     setGroupName("");
-  //     setGroupNameUpdated("");
-  //     setIsEdit(false);
-  //   };
-  // }, [chatId]);
+    return () => {
+      setGroupName("");
+      setGroupNameUpdated("");
+      setIsEdit(false);
+    };
+  }, [chatId]);
 
   // handlers
   function handleNavigateBack() {
@@ -131,17 +142,19 @@ function GroupPage() {
   }
 
   function handleAddMember() {
-    console.log("add member");
+    dispatch(setIsAddMember(true));
   }
 
   function handleDeleteMember() {
-    console.log("delete member");
+    deleteGroup("Deleting...", chatId);
     handleCloseConfirmDelete();
+    navigate("/groups");
   }
 
-  function handleRemoveMember(id) {
-    console.log("remove", id);
+  function handleRemoveMember(userId) {
+    removeMember("Removing member...", { userId, chatId });
   }
+
   return myGroups.isLoading ? (
     <LoadingGrid />
   ) : (
@@ -266,17 +279,21 @@ function GroupPage() {
                 md: "1rem 4rem",
               }}
             >
-              {members.map((user) => (
-                <UserItem
-                  key={user._id}
-                  user={user}
-                  isAdded
-                  styling={{
-                    borderRadius: "0.5rem",
-                  }}
-                  handler={handleRemoveMember}
-                />
-              ))}
+              {removeIsLoading ? (
+                <CircularProgress />
+              ) : (
+                members.map((user) => (
+                  <UserItem
+                    key={user._id}
+                    user={user}
+                    isAdded
+                    styling={{
+                      borderRadius: "0.5rem",
+                    }}
+                    handler={handleRemoveMember}
+                  />
+                ))
+              )}
             </Stack>
             <Stack
               spacing={"1rem"}
@@ -312,7 +329,7 @@ function GroupPage() {
       </Grid>
       {isAddMember && (
         <Suspense fallback={<Backdrop open />}>
-          <AddMemberDialog />
+          <AddMemberDialog chatId={chatId} />
         </Suspense>
       )}
 

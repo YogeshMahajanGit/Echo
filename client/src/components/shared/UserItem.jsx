@@ -18,6 +18,7 @@ function UserItem({
   styling = {},
 }) {
   const { name, _id, avatar } = user;
+
   return (
     <Paper
       variant="elevation"
