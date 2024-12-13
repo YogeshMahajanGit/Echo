@@ -37,7 +37,7 @@ async function handleNewUser(req, res, next) {
       );
     }
   } catch (err) {
-    return next(new ErrorHandler("Error while checking existing user"));
+    return next(new ErrorHandler("Error while checking existing user", 400));
   }
 
   //upload avatar image on cloudinary

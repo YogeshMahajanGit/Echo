@@ -134,6 +134,38 @@ const api = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+
+    // remove member from group endpoint
+    removeGroupMember: builder.mutation({
+      query: ({ chatId, userId }) => ({
+        url: `chats/removemembers`,
+        method: "PUT",
+        credentials: "include",
+        body: { chatId, userId },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // add member in group endpoint
+    addGroupMember: builder.mutation({
+      query: ({ chatId, members }) => ({
+        url: `chats/addmembers`,
+        method: "PUT",
+        credentials: "include",
+        body: { chatId, members },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // Delete group endpoint
+    deleteGroup: builder.mutation({
+      query: (chatId) => ({
+        url: `chats/${chatId}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -152,4 +184,7 @@ export const {
   useGetFriendQuery,
   useCreateNewGroupMutation,
   useRenameGroupMutation,
+  useRemoveGroupMemberMutation,
+  useAddGroupMemberMutation,
+  useDeleteGroupMutation,
 } = api;

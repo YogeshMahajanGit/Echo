@@ -190,7 +190,6 @@ async function handleAddMemberGroup(req, res, next) {
 // remove members
 async function handleRemoveMemberGroup(req, res, next) {
   const { userId, chatId } = req.body;
-
   try {
     // Validate
     if (!userId || !chatId) {
@@ -206,6 +205,7 @@ async function handleRemoveMemberGroup(req, res, next) {
     if (!chat) {
       return next(new ErrorHandler("Chat not found", 404));
     }
+
     //is gruop chat
     if (!chat.groupChat) {
       return next(new ErrorHandler("This is not a group chat", 400));
@@ -218,6 +218,8 @@ async function handleRemoveMemberGroup(req, res, next) {
     if (chat.members.length <= 3) {
       return next(new ErrorHandler("Group must have at least 3 members", 400));
     }
+
+    const allChatMembers = chat.members.map((i) => i.toString());
 
     // Remove the member
     chat.members = chat.members.filter(
@@ -234,14 +236,14 @@ async function handleRemoveMemberGroup(req, res, next) {
       `${removedMember.name} has been removed`
     );
 
-    emitEvent(req, REFETCH_CHATS, chat.members);
+    emitEvent(req, REFETCH_CHATS, allChatMembers);
 
     return res.status(200).json({
       success: true,
       message: "Member removed successfully",
     });
   } catch (error) {
-    next(error);
+    return next(new ErrorHandler("Somthing is wrong"));
   }
 }
 
@@ -493,6 +495,12 @@ async function handleGetMessages(req, res, next) {
 
     const perPage = 10;
     const skip = (page - 1) * perPage;
+
+    const chat = await Chat.findById(chatId);
+
+    if (!chat.members.includes(req.user.toString())) {
+      return next(new ErrorHandler("Access Not Valid!", 403));
+    }
 
     //resolve promise for chat pages
     const [messages, totalMessagesCount] = await Promise.all([

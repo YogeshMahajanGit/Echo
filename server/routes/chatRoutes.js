@@ -48,7 +48,7 @@ chatRouter.put(
   handleAddMemberGroup
 );
 
-chatRouter.delete(
+chatRouter.put(
   "/removemembers",
   removeMemberValidator(),
   handleValidator,
