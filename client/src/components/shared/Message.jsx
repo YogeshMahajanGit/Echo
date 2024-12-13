@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import { Box, Typography } from "@mui/material";
 import { memo } from "react";
 import { boxShadow, orange } from "../../constants/color";
 import moment from "moment";
 import { fileFormat } from "../../lib/features";
 import RenderAttachment from "./RenderAttachment";
+import { motion } from "motion/react";
 
 function Message({ message, user }) {
   const { sender, content, attachments = [], createAt } = message;
@@ -12,7 +14,9 @@ function Message({ message, user }) {
 
   const timeAgo = moment(createAt).fromNow();
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, x: "-100%" }}
+      whileInView={{ opacity: 1, x: 0 }}
       style={{
         alignSelf: sameSender ? "flex-end" : "flex-start",
         backgroundColor: sameSender ? `${orange}` : "white",
@@ -51,7 +55,7 @@ function Message({ message, user }) {
       <Typography variant="caption" color={"textSecondary"}>
         {timeAgo}
       </Typography>
-    </div>
+    </motion.div>
   );
 }
 

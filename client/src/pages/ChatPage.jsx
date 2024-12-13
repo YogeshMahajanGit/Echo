@@ -76,8 +76,8 @@ function ChatPage({ chatId, user }) {
   }, [messages]);
 
   useEffect(() => {
-    if (!chatDetails.data?.chat) return navigate("/");
-  }, [chatDetails.data, navigate]);
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError, navigate]);
 
   // All event Listeners
   const newMessagesListener = useCallback(

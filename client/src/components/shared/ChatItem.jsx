@@ -5,6 +5,7 @@ import { memo } from "react";
 import AvatarCard from "./AvatarCard";
 import { lightOrange } from "../../constants/color";
 import { orange } from "@mui/material/colors";
+import { motion } from "motion/react";
 
 function ChatItem({
   avatar = [],
@@ -22,7 +23,10 @@ function ChatItem({
       to={`/chat/${_id}`}
       onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: "-100%" }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
         style={{
           display: "flex",
           gap: "1.2rem",
@@ -60,7 +64,7 @@ function ChatItem({
             }}
           ></Box>
         )}
-      </div>
+      </motion.div>
     </Link>
   );
 }
