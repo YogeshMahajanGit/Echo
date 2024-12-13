@@ -158,9 +158,19 @@ const api = createApi({
     }),
 
     // Delete group endpoint
-    deleteGroup: builder.mutation({
+    deleteChat: builder.mutation({
       query: (chatId) => ({
         url: `chats/${chatId}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    // Delete group endpoint
+    leaveGroup: builder.mutation({
+      query: (chatId) => ({
+        url: `chats/leavegroup/${chatId}`,
         method: "DELETE",
         credentials: "include",
       }),
@@ -186,5 +196,6 @@ export const {
   useRenameGroupMutation,
   useRemoveGroupMemberMutation,
   useAddGroupMemberMutation,
-  useDeleteGroupMutation,
+  useDeleteChatMutation,
+  useLeaveGroupMutation,
 } = api;

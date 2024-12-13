@@ -34,6 +34,10 @@ function ChatItem({
           borderRadius: "0.6rem",
           border: sameSender ? `1px solid ${orange}` : "",
         }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          handleDeleteChat(e, _id, groupChat);
+        }}
       >
         <AvatarCard avatar={avatar} />
         <Stack>

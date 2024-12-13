@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -9,7 +9,11 @@ import { Drawer, Grid, Skeleton } from "@mui/material";
 import Profile from "../specific/Profile";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsMobileMenu } from "../../redux/reducers/misc";
+import {
+  setIsDeleteMenu,
+  setIsMobileMenu,
+  setSelectedDeleteChat,
+} from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/Hook.jsx";
 import { useSocket } from "../../socket.jsx";
 import {
@@ -22,11 +26,19 @@ import {
   setNewMessagesAlert,
 } from "../../redux/reducers/chat.js";
 import { actionsFromLocalStorage } from "../../lib/features.js";
+import DeleteChatMenu from "../dialogs/DeleteChatMenu.jsx";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
     return (props) => {
       const InnerComponent = () => {
+        const params = useParams();
+        const navigate = useNavigate();
+        const dispatch = useDispatch();
+        const socket = useSocket();
+        const deleteMenuAnchor = useRef(null);
+        const chatId = params.chatId;
+
         const { isMobileMenu } = useSelector((state) => state.misc);
         const { user } = useSelector((state) => state.auth);
         const { newMessagesAlert } = useSelector((state) => state.chat);
@@ -34,11 +46,12 @@ const AppLayout = () => {
         const { isLoading, data, isError, error, refetch } =
           useMyChatsQuery("");
 
-        const params = useParams();
-        const navigate = useNavigate();
-        const chatId = params.chatId;
-        const dispatch = useDispatch();
-        const socket = useSocket();
+        useEffect(() => {
+          actionsFromLocalStorage({
+            key: NEW_MESSAGE_ALERT,
+            value: newMessagesAlert,
+          });
+        }, [newMessagesAlert]);
 
         // All event Listeners
         const newMessageAlertListener = useCallback(
@@ -64,27 +77,28 @@ const AppLayout = () => {
           [REFETCH_CHATS]: refetchListener,
         };
 
+        const handleDeleteChat = (e, chatId, groupChat) => {
+          dispatch(setIsDeleteMenu(true));
+          dispatch(setSelectedDeleteChat({ chatId, groupChat }));
+          deleteMenuAnchor.current = e.currentTarget;
+        };
+
+        const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
+
         // call hook
         useSocketEvents(socket, eventHandlers);
         useErrors([{ isError, error }]);
 
-        useEffect(() => {
-          actionsFromLocalStorage({
-            key: NEW_MESSAGE_ALERT,
-            value: newMessagesAlert,
-          });
-        }, [newMessagesAlert]);
-
-        const handleDeleteChat = useCallback((_e, _id, groupChat) => {
-          // delete logic
-          console.log("Deleting chat:", _id, groupChat);
-        }, []);
-
-        const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
         return (
           <>
             <Title />
             <Header />
+
+            <DeleteChatMenu
+              dispatch={dispatch}
+              deleteMenuAnchor={deleteMenuAnchor}
+            />
+
             {isLoading ? (
               <Skeleton />
             ) : (

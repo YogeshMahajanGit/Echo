@@ -25,7 +25,7 @@ import GroupsList from "../components/specific/GroupsList";
 import UserItem from "../components/shared/UserItem";
 import {
   useChatDetailsQuery,
-  useDeleteGroupMutation,
+  useDeleteChatMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
@@ -71,7 +71,7 @@ function GroupPage() {
     useRemoveGroupMemberMutation
   );
   const [deleteGroup, deleteGroupIsLoading] = useAsyncMutation(
-    useDeleteGroupMutation
+    useDeleteChatMutation
   );
   // handle error
   const errors = [
