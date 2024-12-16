@@ -70,19 +70,33 @@ io.use((socket, next) => {
     socket.request.res,
     async (err) => await socketAuthenticate(err, socket, next)
   );
+<<<<<<< HEAD
 }); 
+=======
+});
+>>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
 
 //New client socket connection
 io.on("connection", (socket) => {
   // find user to connect
+<<<<<<< HEAD
   const user = socket.user; 
 
   // map id 
+=======
+  const user = socket.user;
+
+  // map id
+>>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
   userSocketIDs.set(user._id.toString(), socket.id);
 
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     // msg send to client
+<<<<<<< HEAD
     const sendRealMessage = { 
+=======
+    const sendRealMessage = {
+>>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
       _id: uuid(),
       content: message,
       sender: {

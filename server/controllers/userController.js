@@ -68,7 +68,10 @@ async function handleNewUser(req, res, next) {
   try {
     sendWebToken(res, user, 201, "User created");
   } catch (err) {
+<<<<<<< HEAD
     console.log(err)
+=======
+>>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
     next(new ErrorHandler("Something went wrong during registration"));
   }
 }
@@ -111,7 +114,10 @@ async function handleLogin(req, res, next) {
   try {
     sendWebToken(res, user, 200, `Welcome back, ${user.name}`);
   } catch (error) {
+<<<<<<< HEAD
     console.log(error)
+=======
+>>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
     next(new ErrorHandler("Something went wrong during handleLogin"));
   }
 }
