@@ -7,11 +7,7 @@ const NEW_REQUEST = "NEW_REQUEST";
 // socket events
 const NEW_MESSAGE = "NEW_MESSAGE";
 const START_TYPING = "START_TYPING";
-<<<<<<< HEAD
-const STOP_TYPING = "STOP_TYPING";  
-=======
 const STOP_TYPING = "STOP_TYPING";
->>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
 
 // const CHAT_JOINED = "CHAT_JOINED";
 // const CHAT_LEAVED = "CHAT_LEAVED";

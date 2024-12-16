@@ -88,10 +88,6 @@ function LoginPage() {
       dispatch(userExists(true));
       toast.success(data.message);
     } catch (error) {
-<<<<<<< HEAD
-      console.log(error)
-=======
->>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   }
