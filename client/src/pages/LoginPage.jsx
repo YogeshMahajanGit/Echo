@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false)
 
   const toggleLogin = () => setIsLogin((prev) => !prev);
 
@@ -34,6 +35,9 @@ function LoginPage() {
 
   async function handleSignUp(e) {
     e.preventDefault();
+    setIsLoading(true)
+    const toastId = toast.loading("Sign in...")
+
 
     const config = {
       withCredentials: true,
@@ -57,15 +61,23 @@ function LoginPage() {
         config
       );
 
-      dispatch(userExists(true));
-      toast.success(data.message);
+      dispatch(userExists(data.user));
+      toast.success(data.message,{
+        id:toastId
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong",{
+        id:toastId
+      });
+    }finally{
+    setIsLoading(false)
     }
   }
 
   async function handleLogin(e) {
     e.preventDefault();
+    setIsLoading(true)
+    const toastId = toast.loading("Logging in...");
 
     const config = {
       withCredentials: true,
@@ -85,10 +97,16 @@ function LoginPage() {
         config
       );
 
-      dispatch(userExists(true));
-      toast.success(data.message);
+      dispatch(userExists(data.user));
+      toast.success(data.message,{
+        id:toastId
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong",{
+        id:toastId
+    });
+    }finally{
+    setIsLoading(false)
     }
   }
 
@@ -154,6 +172,7 @@ function LoginPage() {
                   color="primary"
                   type="submit"
                   fullWidth
+                  disabled={isLoading}
                   // onClick={() => setIsLogin(false)}
                 >
                   Login
@@ -274,6 +293,7 @@ function LoginPage() {
                   color="primary"
                   fullWidth
                   onClick={handleSignUp}
+                  disabled={isLoading}
                 >
                   Sign Up
                 </Button>

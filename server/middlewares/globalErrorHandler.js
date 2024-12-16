@@ -26,12 +26,7 @@ function globalErrorHandler(err, req, res, next) {
     response.error = err;
   }
 
-<<<<<<< HEAD
   res.status(err.statusCode || 500).json(response);
-
-=======
-  res.status(err.statusCode).json(response);
->>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
 }
 
 export { globalErrorHandler };

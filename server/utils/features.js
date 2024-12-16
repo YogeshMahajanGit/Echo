@@ -16,6 +16,7 @@ function sendWebToken(res, user, code, message) {
 
   return res.status(code).cookie("echo-token", token, cookieOptions).json({
     success: true,
+    user,
     message,
   });
 }

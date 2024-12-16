@@ -20,10 +20,7 @@
     "express": "^4.21.1",
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
-<<<<<<< HEAD
     "mongodb": "^6.12.0",
-=======
->>>>>>> 2b262d1ed7ea6228942ffae4e5c01aacbb663b70
     "mongoose": "^8.8.2",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.8.1",
