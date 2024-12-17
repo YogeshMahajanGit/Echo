@@ -1,4 +1,4 @@
-import { Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
 function Table({ rows, columns, heading, rowHeight = 52 }) {
@@ -29,19 +29,32 @@ function Table({ rows, columns, heading, rowHeight = 52 }) {
         >
           {heading}
         </Typography>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          rowHeight={rowHeight}
-          sx={{
-            height: "80%",
-            border: "none",
-            ".table-header": {
-              bgcolor: "black",
-              color: "white",
-            },
-          }}
-        ></DataGrid>
+        {rows.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              fontSize: "1.5rem",
+              color: "GrayText",
+              marginTop: "10rem",
+            }}
+          >
+            No Data
+          </Box>
+        ) : (
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            rowHeight={rowHeight}
+            sx={{
+              height: "80%",
+              border: "none",
+              ".table-header": {
+                bgcolor: "black",
+                color: "white",
+              },
+            }}
+          ></DataGrid>
+        )}
       </Paper>
     </Container>
   );

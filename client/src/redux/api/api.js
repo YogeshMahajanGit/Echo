@@ -178,7 +178,7 @@ const api = createApi({
     }),
 
     // Admin endpoints //
-    //get admin data
+    //get admin dataInfo
     getAdminStates: builder.query({
       query: () => ({
         url: "admin/stats",
@@ -187,7 +187,7 @@ const api = createApi({
       providesTags: ["admin"],
     }),
 
-    //get admin users
+    //get admin usersInfo
     getAdminUsers: builder.query({
       query: () => ({
         url: "admin/users",
@@ -196,10 +196,19 @@ const api = createApi({
       providesTags: ["admin"],
     }),
 
-    //get admin chats
+    //get admin chatsInfo
     getAdminChats: builder.query({
       query: () => ({
         url: "admin/chats",
+        credentials: "include",
+      }),
+      providesTags: ["admin"],
+    }),
+
+    //get admin messagesInfo
+    getAdminMessages: builder.query({
+      query: () => ({
+        url: "admin/messages",
         credentials: "include",
       }),
       providesTags: ["admin"],
@@ -229,4 +238,5 @@ export const {
   useGetAdminStatesQuery,
   useGetAdminUsersQuery,
   useGetAdminChatsQuery,
+  useGetAdminMessagesQuery,
 } = api;

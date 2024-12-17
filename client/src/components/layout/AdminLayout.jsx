@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { adminLogout } from "../../redux/thunks/authAdmin";
+import { orange, madiumOrange, lightOrange } from "../../constants/color";
 
 const adminTabs = [
   {
@@ -120,31 +121,46 @@ const SiderBar = ({ w = "100%" }) => {
       direction={"column"}
       p={"3rem"}
       spacing={"3rem"}
+      sx={{
+        backgroundColor: lightOrange,
+        borderRadius: "1rem",
+        border: `2px solid ${madiumOrange}`,
+      }}
     >
       <Typography
         textAlign={"center"}
         variant="h4"
         textTransform={"uppercase"}
+        sx={{ color: orange }}
       >
         Echo
       </Typography>
+
       <Stack spacing={"1rem"}>
         {adminTabs.map((tab) => (
           <Link
             key={tab.path}
             to={tab.path}
-            sx={
-              location.pathname === tab.path && {
-                bgcolor: "black",
-                color: "white",
-                ":hover": { color: "wheat" },
-              }
-            }
+            style={{
+              textDecoration: "none",
+            }}
           >
             <Stack
               direction={"row"}
               alignItems={"center"}
               spacing={"1rem"}
+              p={"0.5rem 1rem"}
+              sx={{
+                borderRadius: "0.5rem",
+                backgroundColor:
+                  location.pathname === tab.path ? madiumOrange : "transparent",
+                color: location.pathname === tab.path ? "#fff" : "#111",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  backgroundColor: madiumOrange,
+                  color: "wheat",
+                },
+              }}
             >
               {tab.icon}
               <Typography fontSize={"1rem"}>{tab.name}</Typography>
@@ -152,13 +168,25 @@ const SiderBar = ({ w = "100%" }) => {
           </Link>
         ))}
 
-        <Link onClick={handleLogOut}>
+        <Link
+          onClick={handleLogOut}
+          style={{ textDecoration: "none", cursor: "pointer" }}
+        >
           <Stack
             direction={"row"}
             alignItems={"center"}
             spacing={"1rem"}
+            p={"0.5rem 1rem"}
+            sx={{
+              borderRadius: "0.5rem",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                backgroundColor: madiumOrange,
+                color: "wheat",
+              },
+            }}
           >
-            <ExitToApp />
+            <ExitToApp sx={{ color: orange }} />
             <Typography fontSize={"1rem"}>Logout</Typography>
           </Stack>
         </Link>

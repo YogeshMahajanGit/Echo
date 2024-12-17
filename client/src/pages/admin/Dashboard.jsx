@@ -14,6 +14,7 @@ import { DoughnutChart, LineChart } from "../../components/specific/Chart";
 import LoadingGrid from "../../components/shared/LoadingGrid";
 import { useGetAdminStatesQuery } from "../../redux/api/api";
 import { useErrors } from "../../hooks/Hook";
+import { orange, madiumOrange, lightOrange } from "../../constants/color";
 
 function Dashboard() {
   const { data, isLoading, error } = useGetAdminStatesQuery();
@@ -44,15 +45,17 @@ function Dashboard() {
           <Paper
             elevation={2}
             sx={{
-              padding: "2rem 3.5rem",
+              padding: "2rem",
               borderRadius: "1rem",
               width: "100%",
               maxWidth: "45rem",
+              backgroundColor: lightOrange,
             }}
           >
             <Typography
               margin={"2rem 0"}
-              variant="h4"
+              variant="h5"
+              sx={{ color: orange, textAlign: "center" }}
             >
               Last Messages
             </Typography>
@@ -66,10 +69,12 @@ function Dashboard() {
               padding: "1rem",
               borderRadius: "1rem",
               width: { xs: "100%", sm: "50%" },
-              display: "flex",
-              justifyItems: "center",
-              alignItems: "center",
               maxWidth: "25rem",
+              backgroundColor: "#fff",
+              border: `2px solid ${madiumOrange}`,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <DoughnutChart
@@ -89,11 +94,12 @@ function Dashboard() {
               height={"100%"}
             >
               <Group />
-              <Typography>Vs</Typography>
+              <Typography color={orange}>Vs</Typography>
               <Person />
             </Stack>
           </Paper>
         </Stack>
+
         <Stack
           direction={{
             xs: "column",
@@ -103,21 +109,22 @@ function Dashboard() {
           justifyContent={"space-between"}
           alignItems={"center"}
           margin={"2rem 0"}
+          flexWrap={"wrap"}
         >
           <Widget
             title={"Users"}
             value={stats?.usersCount || 0}
-            icon={<Person />}
+            icon={<Person sx={{ color: madiumOrange }} />}
           />
           <Widget
             title={"Chats"}
             value={stats?.totalChatsCount || 0}
-            icon={<Group />}
+            icon={<Group sx={{ color: madiumOrange }} />}
           />
           <Widget
             title={"Messages"}
             value={stats?.messagesCount || 0}
-            icon={<Message />}
+            icon={<Message sx={{ color: madiumOrange }} />}
           />
         </Stack>
       </Container>
@@ -132,32 +139,41 @@ const Widget = ({ title, value, icon }) => (
     elevation={2}
     sx={{
       padding: "2rem",
-      margin: "2rem 0",
       borderRadius: "1.5rem",
-      width: "20rem",
+      width: "100%",
+      maxWidth: "20rem",
+      textAlign: "center",
+      backgroundColor: lightOrange,
+      border: `2px solid ${orange}`,
     }}
   >
     <Stack
       alignItems={"center"}
       spacing={"1rem"}
     >
-      <Typography
+      <Box
         sx={{
           color: "#111",
           borderRadius: "50%",
-          border: "4px solid #000",
+          border: `4px solid ${madiumOrange}`,
           width: "5rem",
           height: "5rem",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          fontSize: "1.5rem",
         }}
       >
         {value}
-      </Typography>
+      </Box>
       <Stack>
         {icon}
-        <Typography>{title}</Typography>
+        <Typography
+          variant="subtitle1"
+          color={orange}
+        >
+          {title}
+        </Typography>
       </Stack>
     </Stack>
   </Paper>
@@ -167,20 +183,22 @@ const Appbar = (
   <Paper
     elevation={2}
     sx={{
-      padding: "2rem",
+      padding: "1rem 2rem",
       margin: "2rem 0",
       borderRadius: "1rem",
+      backgroundColor: lightOrange,
     }}
   >
     <Stack
       direction={"row"}
       alignItems={"center"}
       spacing={2}
+      flexWrap={"wrap"}
     >
-      <AdminPanelSettings sx={{ fontSize: "3rem" }} />
+      <AdminPanelSettings sx={{ fontSize: "3rem", color: orange }} />
 
       <SearchField placeholder="Search..." />
-      <CurveButton>Search</CurveButton>
+      <CurveButton sx={{ backgroundColor: madiumOrange }}>Search</CurveButton>
 
       <Box flexGrow={1} />
       <Typography
@@ -191,9 +209,9 @@ const Appbar = (
         textAlign={"center"}
         color={"rgba(0,0,0,0.7)"}
       >
-        {moment().format("dddd,D MMMM YYYY")}
+        {moment().format("dddd, D MMMM YYYY")}
       </Typography>
-      <Notifications />
+      <Notifications sx={{ color: madiumOrange }} />
     </Stack>
   </Paper>
 );
