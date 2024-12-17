@@ -11,9 +11,20 @@ import moment from "moment";
 import { SearchField } from "../../components/styles/StyledComponents";
 import { CurveButton } from "../../components/styles/StyledComponents";
 import { DoughnutChart, LineChart } from "../../components/specific/Chart";
+import LoadingGrid from "../../components/shared/LoadingGrid";
+import { useGetAdminStatesQuery } from "../../redux/api/api";
+import { useErrors } from "../../hooks/Hook";
 
 function Dashboard() {
-  return (
+  const { data, isLoading, error } = useGetAdminStatesQuery();
+
+  const { stats } = data || {};
+
+  useErrors([{ isError: error, error: error }]);
+
+  return isLoading ? (
+    <LoadingGrid />
+  ) : (
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
@@ -39,10 +50,13 @@ function Dashboard() {
               maxWidth: "45rem",
             }}
           >
-            <Typography margin={"2rem 0"} variant="h4">
+            <Typography
+              margin={"2rem 0"}
+              variant="h4"
+            >
               Last Messages
             </Typography>
-            <LineChart value={[2, 5, 32, 4, 33]} />
+            <LineChart value={stats?.messageChart || []} />
           </Paper>
 
           <Paper
@@ -60,7 +74,10 @@ function Dashboard() {
           >
             <DoughnutChart
               labels={["Single Chats", "Group Chats"]}
-              value={[23, 66]}
+              value={[
+                stats?.totalChatsCount - stats?.groupsCount || 0,
+                stats?.groupsCount || 0,
+              ]}
             />
             <Stack
               position={"absolute"}
@@ -77,7 +94,32 @@ function Dashboard() {
             </Stack>
           </Paper>
         </Stack>
-        {Widgets}
+        <Stack
+          direction={{
+            xs: "column",
+            sm: "row",
+          }}
+          spacing={"2rem"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          margin={"2rem 0"}
+        >
+          <Widget
+            title={"Users"}
+            value={stats?.usersCount || 0}
+            icon={<Person />}
+          />
+          <Widget
+            title={"Chats"}
+            value={stats?.totalChatsCount || 0}
+            icon={<Group />}
+          />
+          <Widget
+            title={"Messages"}
+            value={stats?.messagesCount || 0}
+            icon={<Message />}
+          />
+        </Stack>
       </Container>
     </AdminLayout>
   );
@@ -95,7 +137,10 @@ const Widget = ({ title, value, icon }) => (
       width: "20rem",
     }}
   >
-    <Stack alignItems={"center"} spacing={"1rem"}>
+    <Stack
+      alignItems={"center"}
+      spacing={"1rem"}
+    >
       <Typography
         sx={{
           color: "#111",
@@ -118,23 +163,6 @@ const Widget = ({ title, value, icon }) => (
   </Paper>
 );
 
-const Widgets = (
-  <Stack
-    direction={{
-      xs: "column",
-      sm: "row",
-    }}
-    spacing={"2rem"}
-    justifyContent={"space-between"}
-    alignItems={"center"}
-    margin={"2rem 0"}
-  >
-    <Widget title={"Users"} value={34} icon={<Person />} />
-    <Widget title={"Chats"} value={4} icon={<Group />} />
-    <Widget title={"Messages"} value={43} icon={<Message />} />
-  </Stack>
-);
-
 const Appbar = (
   <Paper
     elevation={2}
@@ -144,7 +172,11 @@ const Appbar = (
       borderRadius: "1rem",
     }}
   >
-    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+    <Stack
+      direction={"row"}
+      alignItems={"center"}
+      spacing={2}
+    >
       <AdminPanelSettings sx={{ fontSize: "3rem" }} />
 
       <SearchField placeholder="Search..." />

@@ -17,7 +17,7 @@ const Group = lazy(() => import("./pages/GroupPage"));
 const NotFound = lazy(() => import("./pages/NotFoundPage"));
 
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
-const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const LazyDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const MessageManagement = lazy(() => import("./pages/admin/MessageManagement"));
 const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const ChatManagement = lazy(() => import("./pages/admin/ChatManagement"));
@@ -45,27 +45,57 @@ function App() {
               </SocketProvider>
             }
           >
-            <Route path="/" element={<Home />} />
-            <Route path="/chat/:chatId" element={<Chat />} />
-            <Route path="/groups" element={<Group />} />
+            <Route
+              path="/"
+              element={<Home />}
+            />
+            <Route
+              path="/chat/:chatId"
+              element={<Chat />}
+            />
+            <Route
+              path="/groups"
+              element={<Group />}
+            />
           </Route>
 
           <Route
             path="/login"
             element={
-              <ProtectRoute user={!user} redirect="/">
+              <ProtectRoute
+                user={!user}
+                redirect="/"
+              >
                 <Login />
               </ProtectRoute>
             }
           />
 
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/chats" element={<ChatManagement />} />
-          <Route path="/admin/messages" element={<MessageManagement />} />
+          <Route
+            path="/admin"
+            element={<AdminLogin />}
+          />
+          <Route
+            path="/admin/dashboard"
+            element={<LazyDashboard />}
+          />
+          <Route
+            path="/admin/users"
+            element={<UserManagement />}
+          />
+          <Route
+            path="/admin/chats"
+            element={<ChatManagement />}
+          />
+          <Route
+            path="/admin/messages"
+            element={<MessageManagement />}
+          />
 
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="*"
+            element={<NotFound />}
+          />
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />

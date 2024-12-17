@@ -27,6 +27,7 @@ import {
 } from "../../redux/reducers/chat.js";
 import { actionsFromLocalStorage } from "../../lib/features.js";
 import DeleteChatMenu from "../dialogs/DeleteChatMenu.jsx";
+import { lightOrange, madiumOrange, orange } from "../../constants/color.js";
 
 const AppLayout = () => {
   return (WrappedComponent) => {
@@ -102,9 +103,17 @@ const AppLayout = () => {
             {isLoading ? (
               <Skeleton />
             ) : (
-              <Drawer open={isMobileMenu} onClose={handleMobileMenuClose}>
+              <Drawer
+                open={isMobileMenu}
+                onClose={handleMobileMenuClose}
+                sx={{
+                  width: "80vw",
+                  maxWidth: "400px",
+                  background: lightOrange,
+                  borderRight: `2px solid ${orange}`,
+                }}
+              >
                 <ChatList
-                  w="70vw"
                   chats={data?.chats}
                   chatId={chatId}
                   handleDeleteChat={handleDeleteChat}
@@ -113,18 +122,27 @@ const AppLayout = () => {
               </Drawer>
             )}
 
-            <Grid container sx={{ height: "calc(100vh - 4rem)" }}>
+            <Grid
+              container
+              sx={{ height: "calc(100vh - 4rem)", overflow: "hidden" }}
+            >
               <Grid
-                height={"100%"}
                 item
                 sm={4}
                 md={3}
                 sx={{
                   display: { xs: "none", sm: "block" },
+                  borderRight: `2px solid ${lightOrange}`,
+                  overflowY: "auto",
+                  backgroundColor: "#fff",
+                  padding: "1rem",
                 }}
               >
                 {isLoading ? (
-                  <Skeleton />
+                  <Skeleton
+                    variant="rectangular"
+                    height="100%"
+                  />
                 ) : (
                   <ChatList
                     chats={data?.chats}
@@ -134,16 +152,41 @@ const AppLayout = () => {
                   />
                 )}
               </Grid>
-              <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
-                <WrappedComponent {...props} user={user} chatId={chatId} />
+
+              <Grid
+                item
+                xs={12}
+                sm={8}
+                md={5}
+                lg={6}
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  backgroundColor: lightOrange,
+                  overflowY: "auto",
+                  padding: "1.5rem",
+                  border: `1px solid ${madiumOrange}`,
+                }}
+              >
+                <WrappedComponent
+                  {...props}
+                  user={user}
+                  chatId={chatId}
+                />
               </Grid>
+
               <Grid
                 item
                 md={4}
                 lg={3}
-                height={"100%"}
                 sx={{
                   display: { xs: "none", md: "block" },
+                  backgroundColor: "#fff",
+                  borderLeft: `2px solid ${lightOrange}`,
+                  boxShadow: `0 0 10px rgba(0, 0, 0, 0.05)`,
+                  overflowY: "auto",
                   padding: "2rem",
                 }}
               >

@@ -58,14 +58,19 @@ function LineChart({ value = [] }) {
     datasets: [
       {
         data: value,
-        label: "Revenue",
+        label: "Messages",
         fill: true,
         backgroundColor: "#1001",
         borderColor: "rgba(75,92,192,1)",
       },
     ],
   };
-  return <Line data={data} options={lineChartOptions} />;
+  return (
+    <Line
+      data={data}
+      options={lineChartOptions}
+    />
+  );
 }
 
 const DoughnutChartOptions = {

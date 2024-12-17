@@ -1,4 +1,4 @@
-import { Box, Drawer, Grid, Stack, styled, Typography } from '@mui/material';
+import { Box, Drawer, Grid, Stack, styled, Typography } from "@mui/material";
 import {
   Close,
   Dashboard,
@@ -7,32 +7,32 @@ import {
   ManageAccounts,
   Menu,
   Message,
-} from '@mui/icons-material';
-import IconBtn from '../shared/IconBtn';
-import { useState } from 'react';
-import { useLocation, Link as LinkComponent, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { adminLogout } from '../../redux/thunks/authAdmin';
+} from "@mui/icons-material";
+import IconBtn from "../shared/IconBtn";
+import { useState } from "react";
+import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogout } from "../../redux/thunks/authAdmin";
 
 const adminTabs = [
   {
-    name: 'Dashboard',
-    path: '/admin/dashboard',
+    name: "Dashboard",
+    path: "/admin/dashboard",
     icon: <Dashboard />,
   },
   {
-    name: 'Users',
-    path: '/admin/users',
+    name: "Users",
+    path: "/admin/users",
     icon: <ManageAccounts />,
   },
   {
-    name: 'Chats',
-    path: '/admin/chats',
+    name: "Chats",
+    path: "/admin/chats",
     icon: <Group />,
   },
   {
-    name: 'Message',
-    path: '/admin/messages',
+    name: "Message",
+    path: "/admin/messages",
     icon: <Message />,
   },
 ];
@@ -47,30 +47,30 @@ function AdminLayout({ children }) {
     setIsMobile(false);
   }
 
-  if (!isAdmin) return <Navigate to={'/admin'} />;
+  if (!isAdmin) return <Navigate to={"/admin"} />;
 
   return (
     <Grid
       container
-      minHeight={'100vh'}
+      minHeight={"100vh"}
     >
       <Box
         sx={{
-          display: { xs: 'block', md: 'none' },
-          position: 'fixed',
-          right: '1rem',
-          top: '1rem',
+          display: { xs: "block", md: "none" },
+          position: "fixed",
+          right: "1rem",
+          top: "1rem",
         }}
       >
         {isMobile ? (
           <IconBtn
-            title={'close'}
+            title={"close"}
             icon={<Close />}
             onClick={handleMobile}
           />
         ) : (
           <IconBtn
-            title={'menu'}
+            title={"menu"}
             icon={<Menu />}
             onClick={handleMobile}
           />
@@ -81,7 +81,7 @@ function AdminLayout({ children }) {
         item
         md={4}
         lg={3}
-        sx={{ display: { xs: 'none', md: 'block' } }}
+        sx={{ display: { xs: "none", md: "block" } }}
       >
         <SiderBar />
       </Grid>
@@ -90,7 +90,7 @@ function AdminLayout({ children }) {
         xs={12}
         md={8}
         lg={9}
-        sx={{ bgcolor: '#f1f1f5' }}
+        sx={{ bgcolor: "#f1f1f5" }}
       >
         {children}
       </Grid>
@@ -106,60 +106,60 @@ function AdminLayout({ children }) {
 
 export default AdminLayout;
 
-const SiderBar = ({ w = '100%' }) => {
+const SiderBar = ({ w = "100%" }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
   function handleLogOut() {
-    console.log('logout');
+    console.log("logout");
     dispatch(adminLogout());
   }
   return (
     <Stack
       width={w}
-      direction={'column'}
-      p={'3rem'}
-      spacing={'3rem'}
+      direction={"column"}
+      p={"3rem"}
+      spacing={"3rem"}
     >
       <Typography
-        textAlign={'center'}
+        textAlign={"center"}
         variant="h4"
-        textTransform={'uppercase'}
+        textTransform={"uppercase"}
       >
         Echo
       </Typography>
-      <Stack spacing={'1rem'}>
+      <Stack spacing={"1rem"}>
         {adminTabs.map((tab) => (
           <Link
             key={tab.path}
             to={tab.path}
             sx={
               location.pathname === tab.path && {
-                bgcolor: 'black',
-                color: 'white',
-                ':hover': { color: 'wheat' },
+                bgcolor: "black",
+                color: "white",
+                ":hover": { color: "wheat" },
               }
             }
           >
             <Stack
-              direction={'row'}
-              alignItems={'center'}
-              spacing={'1rem'}
+              direction={"row"}
+              alignItems={"center"}
+              spacing={"1rem"}
             >
               {tab.icon}
-              <Typography fontSize={'1rem'}>{tab.name}</Typography>
+              <Typography fontSize={"1rem"}>{tab.name}</Typography>
             </Stack>
           </Link>
         ))}
 
         <Link onClick={handleLogOut}>
           <Stack
-            direction={'row'}
-            alignItems={'center'}
-            spacing={'1rem'}
+            direction={"row"}
+            alignItems={"center"}
+            spacing={"1rem"}
           >
             <ExitToApp />
-            <Typography fontSize={'1rem'}>Logout</Typography>
+            <Typography fontSize={"1rem"}>Logout</Typography>
           </Stack>
         </Link>
       </Stack>
@@ -168,11 +168,11 @@ const SiderBar = ({ w = '100%' }) => {
 };
 
 const Link = styled(LinkComponent)({
-  textDecoration: 'none',
-  borderRadius: '2rem',
-  color: 'black',
-  padding: '1rem 2rem',
-  ':hover': {
-    color: 'rgba(0, 0, 0, 0.54)',
+  textDecoration: "none",
+  borderRadius: "2rem",
+  color: "black",
+  padding: "1rem 2rem",
+  ":hover": {
+    color: "rgba(0, 0, 0, 0.54)",
   },
 });
