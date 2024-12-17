@@ -1,29 +1,29 @@
-import express from "express";
-import cors from "cors";
-import userRouter from "./routes/userRoutes.js";
-import chatRouter from "./routes/chatRoutes.js";
-import connectDB from "./config/db.js";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import adminRouter from "./routes/adminRoutes.js";
-import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
-import { Server } from "socket.io";
-import { createServer } from "http";
+import express from 'express';
+import cors from 'cors';
+import userRouter from './routes/userRoutes.js';
+import chatRouter from './routes/chatRoutes.js';
+import connectDB from './config/db.js';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import adminRouter from './routes/adminRoutes.js';
+import { globalErrorHandler } from './middlewares/globalErrorHandler.js';
+import { Server } from 'socket.io';
+import { createServer } from 'http';
 import {
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   START_TYPING,
   STOP_TYPING,
-} from "./constants/events.js";
-import { v4 as uuid } from "uuid";
-import { getSockets } from "./lib/helper.js";
-import { Message } from "./models/messageModel.js";
-import { v2 as cloudinary } from "cloudinary";
-import { corsOptions } from "./config/config.js";
-import { socketAuthenticate } from "./middlewares/authenticate.js";
+} from './constants/events.js';
+import { v4 as uuid } from 'uuid';
+import { getSockets } from './lib/helper.js';
+import { Message } from './models/messageModel.js';
+import { v2 as cloudinary } from 'cloudinary';
+import { corsOptions } from './config/config.js';
+import { socketAuthenticate } from './middlewares/authenticate.js';
 
 dotenv.config({
-  path: "./.env",
+  path: './.env',
 });
 
 const app = express();
@@ -31,7 +31,7 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: corsOptions,
 });
-app.set("io", io);
+app.set('io', io);
 
 // middlewares
 app.use(express.json());
@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 
 const urlDB = process.env.MONGO_URI;
-const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
+const envMode = process.env.NODE_ENV.trim() || 'PRODUCTION';
 const PORT = process.env.PORT || 3000;
 const adminSecretKey = process.env.ADMIN_SECRET_KEY;
 const userSocketIDs = new Map();
@@ -54,13 +54,13 @@ cloudinary.config({
 });
 
 // Routes
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/chats", chatRouter);
-app.use("/api/v1/admin", adminRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/chats', chatRouter);
+app.use('/api/v1/admin', adminRouter);
 
 //testing
-app.get("/", (req, res) => {
-  res.send("Welcome Developer");
+app.get('/', (req, res) => {
+  res.send('Welcome Developer');
 });
 
 // socket middleware / connect-auth
@@ -70,19 +70,19 @@ io.use((socket, next) => {
     socket.request.res,
     async (err) => await socketAuthenticate(err, socket, next)
   );
-}); 
+});
 
 //New client socket connection
-io.on("connection", (socket) => {
+io.on('connection', (socket) => {
   // find user to connect
-  const user = socket.user; 
+  const user = socket.user;
 
-  // map id 
+  // map id
   userSocketIDs.set(user._id.toString(), socket.id);
 
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     // msg send to client
-    const sendRealMessage = { 
+    const sendRealMessage = {
       _id: uuid(),
       content: message,
       sender: {
@@ -105,6 +105,7 @@ io.on("connection", (socket) => {
     io.to(membersSocket).emit(NEW_MESSAGE, {
       chatId,
       message: sendRealMessage,
+      chatId,
     });
     io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
 
@@ -130,8 +131,8 @@ io.on("connection", (socket) => {
     socket.to(membersSockets).emit(STOP_TYPING, { chatId });
   });
 
-  socket.on("disconnect", () => {
-    console.log("client disconnected");
+  socket.on('disconnect', () => {
+    console.log('client disconnected');
     userSocketIDs.delete(user._id.toString());
   });
 });

@@ -1,18 +1,19 @@
-import { Chat } from "../models/chatModel.js";
-import { Message } from "../models/messageModel.js";
-import { User } from "../models/userModel.js";
-import { ErrorHandler } from "../utils/utility.js";
-import jwt from "jsonwebtoken";
-import { cookieOptions } from "../utils/features.js";
-import { adminSecretKey } from "../server.js";
+import { Chat } from '../models/chatModel.js';
+import { Message } from '../models/messageModel.js';
+import { User } from '../models/userModel.js';
+import { ErrorHandler } from '../utils/utility.js';
+import jwt from 'jsonwebtoken';
+import { cookieOptions } from '../utils/features.js';
+import { adminSecretKey } from '../server.js';
 
 async function handleAdminLogin(req, res, next) {
   const { secretKey } = req.body;
+
   try {
     const isMatch = secretKey === adminSecretKey;
 
     if (!isMatch) {
-      return next(new ErrorHandler("Access denied!", 401));
+      return next(new ErrorHandler('Access denied!', 401));
     }
 
     // get token
@@ -21,13 +22,13 @@ async function handleAdminLogin(req, res, next) {
     // set token in cookies
     return res
       .status(200)
-      .cookie("echo-admin-token", token, {
+      .cookie('echo-admin-token', token, {
         ...cookieOptions,
         maxAge: 1000 * 60 * 30,
       })
       .json({
         success: true,
-        message: "Authentication successful",
+        message: 'Authentication successful',
       });
   } catch (error) {
     return next(new ErrorHandler(error.message, 500));
@@ -37,13 +38,13 @@ async function handleAdminLogin(req, res, next) {
 async function handleAdminLogout(req, res, next) {
   return res
     .status(200)
-    .cookie("echo-admin-token", "", {
+    .cookie('echo-admin-token', '', {
       ...cookieOptions,
       maxAge: 0,
     })
     .json({
       success: true,
-      message: "Logout successful",
+      message: 'Logout successful',
     });
 }
 
@@ -83,8 +84,8 @@ async function handleGetAllUsers(req, res, next) {
 async function handleGetAllChats(req, res, next) {
   try {
     const chats = await Chat.find({})
-      .populate("members", "name avatar")
-      .populate("creator", "name avatar");
+      .populate('members', 'name avatar')
+      .populate('creator', 'name avatar');
 
     const transformedChats = await Promise.all(
       chats.map(async ({ members, _id, groupChat, name, creator }) => {
@@ -102,8 +103,8 @@ async function handleGetAllChats(req, res, next) {
             avatar: avatar.url,
           })),
           creator: {
-            name: creator?.name || "None",
-            avatar: creator?.avatar.url || "",
+            name: creator?.name || 'None',
+            avatar: creator?.avatar.url || '',
           },
           totalMembers: members.length,
           totalMessages,
@@ -124,8 +125,8 @@ async function handleGetAllMessages(req, res, next) {
   try {
     // find all messages
     const messages = await Message.find({})
-      .populate("sender", "name avatar")
-      .populate("chat", "groupChat");
+      .populate('sender', 'name avatar')
+      .populate('chat', 'groupChat');
 
     const transformedMessages = messages.map(
       ({ _id, sender, createdAt, chat, content, attachment }) => ({
@@ -172,7 +173,7 @@ async function handleGetDashboardStats(req, res, next) {
         $gte: lastSevenDays,
         $lte: today,
       },
-    }).select("createdAt");
+    }).select('createdAt');
 
     const messages = new Array(7).fill(0);
     const dayInMiliseconds = 1000 * 60 * 60 * 24;
