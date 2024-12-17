@@ -1,46 +1,46 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { server } from '../../constants/config';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { server } from "../../constants/config";
 
 const api = createApi({
-  reducerPath: 'api',
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1/` }),
-  tagTypes: ['Chat', 'User', 'Message'],
+  tagTypes: ["Chat", "User", "Message", "admin"],
 
   endpoints: (builder) => ({
     // my chat endpoint
     myChats: builder.query({
       query: () => ({
-        url: 'chats/my',
-        credentials: 'include',
+        url: "chats/my",
+        credentials: "include",
       }),
-      providesTags: ['Chat'],
+      providesTags: ["Chat"],
     }),
 
     // search user endpoint
     searchUser: builder.query({
       query: (name) => ({
         url: `users/search?name=${name}`,
-        credentials: 'include',
+        credentials: "include",
       }),
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
 
     // send request endpoint
     sendFriendRequest: builder.mutation({
       query: (data) => ({
-        url: '/users/send-request',
-        method: 'PUT',
-        credentials: 'include',
+        url: "/users/send-request",
+        method: "PUT",
+        credentials: "include",
         body: data,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
 
     // get notification of other user endpoint
     getNotification: builder.query({
       query: () => ({
-        url: '/users/notifications',
-        credentials: 'include',
+        url: "/users/notifications",
+        credentials: "include",
       }),
       //no caching
       keepUnusedDataFor: 0,
@@ -49,33 +49,33 @@ const api = createApi({
     // accept request endpoint
     acceptFriendRequest: builder.mutation({
       query: (data) => ({
-        url: '/users/accept-request',
-        method: 'PUT',
-        credentials: 'include',
+        url: "/users/accept-request",
+        method: "PUT",
+        credentials: "include",
         body: data,
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // get chat details endpoint
     chatDetails: builder.query({
       query: ({ chatId, populate = false }) => {
         let url = `chats/${chatId}`;
-        if (populate) url += '?populate=true';
+        if (populate) url += "?populate=true";
 
         return {
           url,
-          credentials: 'include',
+          credentials: "include",
         };
       },
-      providesTags: ['Chat'],
+      providesTags: ["Chat"],
     }),
 
     // get my chat endpoint /message/:id
     getMyMessages: builder.query({
       query: ({ chatId, page }) => ({
         url: `chats/message/${chatId}?page=${page}`,
-        credentials: 'include',
+        credentials: "include",
       }),
       keepUnusedDataFor: 0,
     }),
@@ -84,8 +84,8 @@ const api = createApi({
     sendAttachments: builder.mutation({
       query: (data) => ({
         url: `chats/message`,
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
         body: data,
       }),
     }),
@@ -93,96 +93,116 @@ const api = createApi({
     // get groups endpoint
     myGroups: builder.query({
       query: () => ({
-        url: 'chats/my/groups',
-        credentials: 'include',
+        url: "chats/my/groups",
+        credentials: "include",
       }),
-      providesTags: ['Chat'],
+      providesTags: ["Chat"],
     }),
 
     // get my frined endpoint
     getFriend: builder.query({
       query: (chatId) => {
-        let url = 'users/friends';
+        let url = "users/friends";
         if (chatId) url += `?chatId=${chatId}`;
 
         return {
           url,
-          credentials: 'include',
+          credentials: "include",
         };
       },
-      providesTags: ['Chat'],
+      providesTags: ["Chat"],
     }),
 
     // create group endpoint
     createNewGroup: builder.mutation({
       query: ({ name, members }) => ({
         url: `chats/newGroup`,
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
         body: { name, members },
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // create group endpoint
     renameGroup: builder.mutation({
       query: ({ chatId, name }) => ({
         url: `chats/${chatId}`,
-        method: 'PUT',
-        credentials: 'include',
+        method: "PUT",
+        credentials: "include",
         body: { name },
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // remove member from group endpoint
     removeGroupMember: builder.mutation({
       query: ({ chatId, userId }) => ({
         url: `chats/removemembers`,
-        method: 'PUT',
-        credentials: 'include',
+        method: "PUT",
+        credentials: "include",
         body: { chatId, userId },
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // add member in group endpoint
     addGroupMember: builder.mutation({
       query: ({ chatId, members }) => ({
         url: `chats/addmembers`,
-        method: 'PUT',
-        credentials: 'include',
+        method: "PUT",
+        credentials: "include",
         body: { chatId, members },
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // Delete group endpoint
     deleteChat: builder.mutation({
       query: (chatId) => ({
         url: `chats/${chatId}`,
-        method: 'DELETE',
-        credentials: 'include',
+        method: "DELETE",
+        credentials: "include",
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
     // Delete group endpoint
     leaveGroup: builder.mutation({
       query: (chatId) => ({
         url: `chats/leavegroup/${chatId}`,
-        method: 'DELETE',
-        credentials: 'include',
+        method: "DELETE",
+        credentials: "include",
       }),
-      invalidatesTags: ['Chat'],
+      invalidatesTags: ["Chat"],
     }),
 
+    // Admin endpoints //
+    //get admin data
     getAdminStates: builder.query({
       query: () => ({
-        url: 'admin/stats',
-        credentials: 'include',
+        url: "admin/stats",
+        credentials: "include",
       }),
-      providesTags: ['Chat'],
+      providesTags: ["admin"],
+    }),
+
+    //get admin users
+    getAdminUsers: builder.query({
+      query: () => ({
+        url: "admin/users",
+        credentials: "include",
+      }),
+      providesTags: ["admin"],
+    }),
+
+    //get admin chats
+    getAdminChats: builder.query({
+      query: () => ({
+        url: "admin/chats",
+        credentials: "include",
+      }),
+      providesTags: ["admin"],
     }),
   }),
 });
@@ -207,4 +227,6 @@ export const {
   useDeleteChatMutation,
   useLeaveGroupMutation,
   useGetAdminStatesQuery,
+  useGetAdminUsersQuery,
+  useGetAdminChatsQuery,
 } = api;
