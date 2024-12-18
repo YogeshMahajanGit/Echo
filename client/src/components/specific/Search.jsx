@@ -49,7 +49,10 @@ function Search() {
   const handleSearchClose = () => dispatch(setIsSearch(false));
 
   return (
-    <Dialog open={isSearch} onClose={handleSearchClose}>
+    <Dialog
+      open={isSearch}
+      onClose={handleSearchClose}
+    >
       <Stack
         padding={"2rem"}
         direction={"column"}
@@ -58,7 +61,10 @@ function Search() {
           borderRadius: "2rem",
         }}
       >
-        <DialogTitle variant="h5" textAlign={"center"}>
+        <DialogTitle
+          variant="h5"
+          textAlign={"center"}
+        >
           Find People
         </DialogTitle>
         <TextField

@@ -186,10 +186,18 @@ function ChatPage({ chatId, user }) {
           backgroundRepeat: "no-repeat",
           overflowX: "hidden",
           overflowY: "auto",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
         }}
       >
         {allMessages.map((chat) => (
-          <Message message={chat} user={user} key={chat._id} />
+          <Message
+            message={chat}
+            user={user}
+            key={chat._id}
+          />
         ))}
 
         {userTyping && <TypingLoading />}
@@ -237,7 +245,10 @@ function ChatPage({ chatId, user }) {
           </IconButton>
         </Stack>
       </form>
-      <FileMenu anchorEl={fileAnchor} chatId={chatId} />
+      <FileMenu
+        anchorEl={fileAnchor}
+        chatId={chatId}
+      />
     </>
   );
 }

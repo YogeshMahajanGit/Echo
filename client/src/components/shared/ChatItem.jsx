@@ -3,8 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Link } from "../styles/StyledComponents";
 import { memo } from "react";
 import AvatarCard from "./AvatarCard";
-import { lightOrange } from "../../constants/color";
-import { orange } from "@mui/material/colors";
+import { orange, lightOrange } from "../../constants/color";
 import { motion } from "motion/react";
 
 function ChatItem({
@@ -29,14 +28,13 @@ function ChatItem({
         transition={{ delay: 0.1 }}
         style={{
           display: "flex",
-          gap: "1.2rem",
+          gap: "0.7rem",
           alignItems: "center",
           backgroundColor: sameSender ? `${lightOrange}` : "",
           padding: "0.3rem",
           color: "black",
           position: "relative",
           borderRadius: "0.6rem",
-          border: sameSender ? `1px solid ${orange}` : "",
         }}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -44,10 +42,23 @@ function ChatItem({
         }}
       >
         <AvatarCard avatar={avatar} />
+        <Typography>{name}</Typography>
         <Stack>
-          <Typography>{name}</Typography>
           {newMessageAlert && (
-            <Typography>{newMessageAlert.count} New Message</Typography>
+            <Box
+              sx={{
+                height: "25px",
+                width: "25px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "50%",
+                backgroundColor: `${orange}`,
+                color: "white",
+              }}
+            >
+              {newMessageAlert.count}
+            </Box>
           )}
         </Stack>
         {isOnline && (
