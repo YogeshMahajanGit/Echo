@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -19,6 +19,7 @@ import { useSocket } from "../../socket.jsx";
 import {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
+  ONLINE_USERS,
   REFETCH_CHATS,
 } from "../../constants/events.js";
 import {
@@ -32,6 +33,8 @@ const AppLayout = () => {
   return (WrappedComponent) => {
     return (props) => {
       const InnerComponent = () => {
+        const [onlineUsers, setOnlineUsers] = useState([]);
+
         const params = useParams();
         const navigate = useNavigate();
         const dispatch = useDispatch();
@@ -66,6 +69,10 @@ const AppLayout = () => {
           dispatch(incrementNotifications());
         }, [dispatch]);
 
+        const userOnlineListener = useCallback((data) => {
+          setOnlineUsers(data);
+        }, []);
+
         const refetchListener = useCallback(() => {
           refetch();
           navigate("/");
@@ -75,6 +82,7 @@ const AppLayout = () => {
           [NEW_MESSAGE_ALERT]: newMessageAlertListener,
           [NEW_REQUEST]: newRequestListener,
           [REFETCH_CHATS]: refetchListener,
+          [ONLINE_USERS]: userOnlineListener,
         };
 
         const handleDeleteChat = (e, chatId, groupChat) => {
@@ -112,6 +120,7 @@ const AppLayout = () => {
                   chatId={chatId}
                   handleDeleteChat={handleDeleteChat}
                   newMessagesAlert={newMessagesAlert}
+                  onlineUsers={onlineUsers}
                 />
               </Drawer>
             )}
@@ -137,6 +146,7 @@ const AppLayout = () => {
                     chatId={chatId}
                     handleDeleteChat={handleDeleteChat}
                     newMessagesAlert={newMessagesAlert}
+                    onlineUsers={onlineUsers}
                   />
                 )}
               </Grid>

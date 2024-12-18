@@ -10,6 +10,8 @@ import Message from "../components/shared/Message";
 import { useSocket } from "../socket";
 import {
   ALERT,
+  CHAT_JOINED,
+  CHAT_LEAVED,
   NEW_MESSAGE,
   START_TYPING,
   STOP_TYPING,
@@ -60,13 +62,14 @@ function ChatPage({ chatId, user }) {
   const members = chatDetails?.data?.chat?.members;
 
   useEffect(() => {
-    // socket.emit(CHAT_JOINED, { userId: user._id, members });
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
     dispatch(removeMessagesAlert(chatId));
     return () => {
       setMessages([]);
       setMessage("");
       setOldMessages([]);
       setPage(1);
+      socket.emit(CHAT_LEAVED, { userId: user._id, members });
     };
   }, [chatId, setOldMessages, dispatch]);
 
@@ -91,7 +94,6 @@ function ChatPage({ chatId, user }) {
   const startTypingListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
-      // console.log("s Typing...", data);
       setUserTyping(true);
     },
     [chatId]

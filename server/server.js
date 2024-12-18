@@ -10,8 +10,11 @@ import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import {
+  CHAT_JOINED,
+  CHAT_LEAVED,
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
+  ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
 } from "./constants/events.js";
@@ -43,6 +46,7 @@ const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
 const PORT = process.env.PORT || 3000;
 const adminSecretKey = process.env.ADMIN_SECRET_KEY;
 const userSocketIDs = new Map();
+const onlineUsers = new Set();
 
 //DB connection & cloudinary config
 connectDB(urlDB);
@@ -113,7 +117,7 @@ io.on("connection", (socket) => {
     try {
       await Message.create(messageForDB);
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   });
 
@@ -131,9 +135,24 @@ io.on("connection", (socket) => {
     socket.to(membersSockets).emit(STOP_TYPING, { chatId });
   });
 
+  socket.on(CHAT_JOINED, ({ userId, members }) => {
+    const membersSocket = getSockets(members);
+
+    onlineUsers.add(userId.toString());
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
+
+  socket.on(CHAT_LEAVED, ({ userId, members }) => {
+    const membersSocket = getSockets(members);
+
+    onlineUsers.delete(userId.toString());
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
+
   socket.on("disconnect", () => {
-    console.log("client disconnected");
     userSocketIDs.delete(user._id.toString());
+    onlineUsers.delete(user._id.toString());
+    socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 });
 
