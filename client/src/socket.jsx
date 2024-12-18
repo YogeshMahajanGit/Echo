@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { createContext, useContext, useMemo } from "react";
 import { io } from "socket.io-client";
 import { server } from "./constants/config";

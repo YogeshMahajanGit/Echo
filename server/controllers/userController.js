@@ -146,7 +146,11 @@ async function handleSearchUser(req, res, next) {
 
   try {
     //my chats
-    const myChats = await Chat.find({ groupChat: false, members: req.user });
+    // const myChats = await Chat.find({ groupChat: false, members: req.user });
+    const myChats = await Chat.find({
+      groupChat: false,
+      members: req.user._id,
+    });
 
     const allUsers = myChats.flatMap((chat) => chat.members);
 
@@ -159,7 +163,7 @@ async function handleSearchUser(req, res, next) {
     const users = newUserExceptMe.map(({ _id, name, avatar }) => ({
       _id,
       name,
-      avatar: avatar.url,
+      avatar: avatar?.url || null,
     }));
 
     return res.status(200).json({

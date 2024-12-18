@@ -345,7 +345,6 @@ async function handleSendAttachments(req, res, next) {
 
 // Chat Details
 async function handleGetChatDetails(req, res, next) {
-  console.log("comming");
   // find chat details
   if (req.query.populate === "true") {
     const chat = await Chat.findById(req.params.id)

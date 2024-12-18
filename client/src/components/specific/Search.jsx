@@ -19,10 +19,11 @@ import {
 import { useAsyncMutation } from "../../hooks/Hook";
 
 function Search() {
+  const { isSearch } = useSelector((state) => state.misc);
   const [users, setUsers] = useState([]);
   const searchValue = useInputValidation("");
-  const { isSearch } = useSelector((state) => state.misc);
   const [searchUser] = useLazySearchUserQuery();
+
   const [sendFriendRequest, isLoadingSendfriendRequest] = useAsyncMutation(
     useSendFriendRequestMutation
   );
@@ -35,7 +36,7 @@ function Search() {
       searchUser(searchValue.value)
         .then(({ data }) => setUsers(data.users))
         .catch((e) => console.error(e));
-    }, 1000);
+    }, 500);
 
     return () => {
       clearTimeout(timeOutId);

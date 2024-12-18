@@ -28,7 +28,11 @@ function Message({ message, user }) {
       }}
     >
       {!sameSender && (
-        <Typography variant="caption" color="textDisabled" fontWeight={600}>
+        <Typography
+          variant="caption"
+          color="textDisabled"
+          fontWeight={600}
+        >
           {sender.name}
         </Typography>
       )}
@@ -52,7 +56,10 @@ function Message({ message, user }) {
             </Box>
           );
         })}
-      <Typography variant="caption" color={"textSecondary"}>
+      <Typography
+        variant="caption"
+        color={"textSecondary"}
+      >
         {timeAgo}
       </Typography>
     </motion.div>

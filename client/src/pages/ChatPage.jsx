@@ -31,6 +31,9 @@ function ChatPage({ chatId, user }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const typingTimeout = useRef(null);
+  const bottomRef = useRef(null);
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
@@ -38,9 +41,6 @@ function ChatPage({ chatId, user }) {
   const [fileAnchor, setFileAnchor] = useState(null);
   const [iamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-
-  const typingTimeout = useRef(null);
-  const bottomRef = useRef(null);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const previousChatChuck = useGetMyMessagesQuery({ chatId, page });
@@ -61,36 +61,16 @@ function ChatPage({ chatId, user }) {
 
   const members = chatDetails?.data?.chat?.members;
 
-  useEffect(() => {
-    socket.emit(CHAT_JOINED, { userId: user._id, members });
-    dispatch(removeMessagesAlert(chatId));
-    return () => {
-      setMessages([]);
-      setMessage("");
-      setOldMessages([]);
-      setPage(1);
-      socket.emit(CHAT_LEAVED, { userId: user._id, members });
-    };
-  }, [chatId, setOldMessages, dispatch]);
-
-  useEffect(() => {
-    if (bottomRef.current)
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    if (chatDetails.isError) return navigate("/");
-  }, [chatDetails.isError, navigate]);
-
   // All event Listeners
   const newMessagesListener = useCallback(
     (data) => {
-      if (data.chaId !== chatId) return;
+      if (data.chatId !== chatId) return;
 
       setMessages((prev) => [...prev, data.message]);
     },
     [chatId]
   );
+
   const startTypingListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
@@ -108,8 +88,10 @@ function ChatPage({ chatId, user }) {
 
   const alertListener = useCallback(
     (data) => {
+      if (data.chatId !== chatId) return;
+
       const alertMessage = {
-        content: data,
+        content: data.message,
         sender: {
           _id: "mckmckmc",
           name: "Admin",
@@ -162,6 +144,28 @@ function ChatPage({ chatId, user }) {
     setMessage("");
   }
 
+  useEffect(() => {
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
+    dispatch(removeMessagesAlert(chatId));
+
+    return () => {
+      // setMessages([]);
+      // setMessage("");
+      setOldMessages([]);
+      setPage(1);
+      socket.emit(CHAT_LEAVED, { userId: user._id, members });
+    };
+  }, [chatId]);
+
+  useEffect(() => {
+    if (bottomRef.current)
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError, navigate]);
+
   // call hook
   useSocketEvents(socket, eventHandle);
   useErrors(errors);
@@ -196,9 +200,9 @@ function ChatPage({ chatId, user }) {
       >
         {allMessages.map((chat) => (
           <Message
+            key={chat._id}
             message={chat}
             user={user}
-            key={chat._id}
           />
         ))}
 

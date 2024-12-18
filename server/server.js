@@ -37,9 +37,9 @@ const io = new Server(server, {
 app.set("io", io);
 
 // middlewares
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
 
 const urlDB = process.env.MONGO_URI;
 const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
@@ -109,7 +109,6 @@ io.on("connection", (socket) => {
     io.to(membersSocket).emit(NEW_MESSAGE, {
       chatId,
       message: sendRealMessage,
-      chatId,
     });
     io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
 
