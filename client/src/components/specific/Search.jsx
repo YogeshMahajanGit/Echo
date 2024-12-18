@@ -55,15 +55,16 @@ function Search() {
       onClose={handleSearchClose}
     >
       <Stack
-        padding={"2rem"}
+        padding={{ sm: "2rem", xs: "0.5rem" }}
         direction={"column"}
-        width={"24rem"}
+        width={{ sm: "25rem" }}
         sx={{
           borderRadius: "2rem",
         }}
       >
         <DialogTitle
           variant="h5"
+          fontWeight={"600"}
           textAlign={"center"}
         >
           Find People

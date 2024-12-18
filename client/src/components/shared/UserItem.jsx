@@ -23,6 +23,7 @@ function UserItem({
     <Paper
       variant="elevation"
       sx={{
+        border: "1px solid gray",
         marginBottom: "10px",
         borderRadius: "5px",
         cursor: "pointer",

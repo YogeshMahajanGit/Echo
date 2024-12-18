@@ -21,6 +21,12 @@ function ChatList({
       overflow={"auto"}
       direction={"column"}
       height={"100%"}
+      sx={{
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
     >
       {chats?.map((data, index) => {
         const { avatar, _id, name, groupChat, members } = data;

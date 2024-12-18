@@ -12,9 +12,20 @@ function GroupItem({ group, chatId }) {
         if (chatId === _id) e.preventDefault();
       }}
     >
-      <Stack direction={"row"} alignItems={"center"}>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        gap={"1rem"}
+        sx={{}}
+      >
         <AvatarCard avatar={avatar} />
-        <Typography>{name}</Typography>
+        <Typography
+          // fontSize=
+          fontSize={{ xs: "1rem", sm: "1.8rem" }}
+          fontWeight={"600"}
+        >
+          {name}
+        </Typography>
       </Stack>
     </Link>
   );

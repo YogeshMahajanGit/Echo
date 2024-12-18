@@ -42,7 +42,12 @@ function ChatItem({
         }}
       >
         <AvatarCard avatar={avatar} />
-        <Typography>{name}</Typography>
+        <Typography
+          variant="h6"
+          fontWeight={"600"}
+        >
+          {name}
+        </Typography>
         <Stack>
           {newMessageAlert && (
             <Box

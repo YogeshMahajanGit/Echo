@@ -30,6 +30,7 @@ import {
   setIsSearch,
 } from "../../redux/reducers/misc";
 import { resetNotifications } from "../../redux/reducers/chat";
+import { Link } from "react-router-dom";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NotificationDialog = lazy(() => import("../specific/Notification"));
@@ -76,7 +77,10 @@ function Header() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }} height={"4rem"}>
+      <Box
+        sx={{ flexGrow: 1 }}
+        height={"4rem"}
+      >
         <AppBar
           position="static"
           sx={{
@@ -89,23 +93,32 @@ function Header() {
                 display: { xs: "block", sm: "none" },
               }}
             >
-              <IconButton color="inherit" onClick={handleMobile}>
+              <IconButton
+                color="inherit"
+                onClick={handleMobile}
+              >
                 <MenuIcon />
               </IconButton>
             </Box>
-            <Typography
-              variant="h5"
-              sx={{
-                // display: {  sm: "block" },
-                letterSpacing: "0.2rem",
-                fontSize: { xs: "20px" },
-                fontWeight: "600",
-                cursor: "pointer",
-                marginLeft: "1rem",
-              }}
+
+            <Link
+              to="/"
+              style={{ textDecoration: "none", color: "white" }}
             >
-              Echo
-            </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  display: { xs: "none", sm: "block" },
+                  letterSpacing: "0.2rem",
+                  fontSize: { xs: "20px", sm: "1.8rem" },
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  marginLeft: "1rem",
+                }}
+              >
+                Echo
+              </Typography>
+            </Link>
 
             <Box sx={{ flexGrow: 1 }} />
             <Box>

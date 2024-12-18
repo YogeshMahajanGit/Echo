@@ -18,8 +18,10 @@ export const Link = styled(LinkComponent)({
   textDecoration: "none",
   color: "black",
   borderRadius: "0.6rem",
+  marginTop: "2rem",
+  marginLeft: "1rem",
+  padding: "6px",
   ":hover": {
-    border: `1px solid ${orange}`,
     backgroundColor: `${lightOrange}`,
   },
 });

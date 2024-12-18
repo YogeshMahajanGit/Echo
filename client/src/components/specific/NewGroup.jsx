@@ -69,9 +69,20 @@ function NewGroup() {
   }
 
   return (
-    <Dialog open={isNewGroup} onClose={handleClodeDialog}>
-      <Stack spacing={2} padding={{ xs: "1rem", sm: "2rem" }} width={"25rem"}>
-        <DialogTitle variant="h5" textAlign={"center"}>
+    <Dialog
+      open={isNewGroup}
+      onClose={handleClodeDialog}
+    >
+      <Stack
+        spacing={2}
+        padding={{ xs: "1rem", sm: "2rem" }}
+        width={{ sm: "25rem" }}
+      >
+        <DialogTitle
+          variant="h5"
+          fontWeight={"600"}
+          textAlign={"center"}
+        >
           New Group
         </DialogTitle>
 
@@ -97,7 +108,10 @@ function NewGroup() {
             ))
           )}
         </Stack>
-        <Stack direction={"row"} justifyContent={"space-evenly"}>
+        <Stack
+          direction={"row"}
+          justifyContent={"space-evenly"}
+        >
           <Button
             variant="outlined"
             onClick={handleCreateGroup}
@@ -105,7 +119,11 @@ function NewGroup() {
           >
             Create
           </Button>
-          <Button color="error" variant="text" onClick={handleClodeDialog}>
+          <Button
+            color="error"
+            variant="text"
+            onClick={handleClodeDialog}
+          >
             Cancel
           </Button>
         </Stack>

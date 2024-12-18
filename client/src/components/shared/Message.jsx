@@ -37,14 +37,24 @@ function Message({ message, user }) {
         </Typography>
       )}
 
-      {content && <Typography>{content}</Typography>}
+      {content && (
+        <Typography
+          padding={"1px"}
+          fontWeight={600}
+        >
+          {content}
+        </Typography>
+      )}
       {attachments.length > 0 &&
         attachments.map((attachment, index) => {
           const { url } = attachment;
           const file = fileFormat(url);
 
           return (
-            <Box key={index}>
+            <Box
+              key={index}
+              padding={"4px"}
+            >
               <a
                 href={url}
                 target="_blank"

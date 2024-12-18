@@ -6,10 +6,19 @@ function GroupsList({ w = "100%", myGroup = [], chatId }) {
     <Stack width={w}>
       {myGroup.length > 0 ? (
         myGroup.map((group) => (
-          <GroupItem key={group._id} group={group} chatId={chatId} />
+          <GroupItem
+            key={group._id}
+            group={group}
+            chatId={chatId}
+          />
         ))
       ) : (
-        <Typography textAlign={"center"} padding={"1rem"}>
+        <Typography
+          textAlign={"center"}
+          padding={"1rem"}
+          variant="h4"
+          fontWeight={"600"}
+        >
           No Group
         </Typography>
       )}

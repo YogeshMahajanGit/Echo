@@ -104,8 +104,8 @@ function GroupPage() {
 
   useEffect(() => {
     if (chatId) {
-      setGroupName(`Group Name`);
-      setGroupNameUpdated(`Group Name`);
+      setGroupName(groupName);
+      setGroupNameUpdated(groupName);
     }
 
     return () => {
@@ -158,7 +158,10 @@ function GroupPage() {
   return myGroups.isLoading ? (
     <LoadingGrid />
   ) : (
-    <Grid container height={"100vh"}>
+    <Grid
+      container
+      height={"100vh"}
+    >
       <Grid
         item
         sx={{
@@ -170,7 +173,10 @@ function GroupPage() {
         borderRight={"1px solid gray"}
         sm={4}
       >
-        <GroupsList myGroup={myGroups?.data?.groups} chatId={chatId} />
+        <GroupsList
+          myGroup={myGroups?.data?.groups}
+          chatId={chatId}
+        />
       </Grid>
       <Grid
         item
@@ -200,7 +206,11 @@ function GroupPage() {
               },
             }}
           >
-            <IconBtn title={"menu"} icon={<Menu />} onClick={handleMobile} />
+            <IconBtn
+              title={"menu"}
+              icon={<Menu />}
+              onClick={handleMobile}
+            />
           </Box>
           <Box
             sx={{
@@ -247,8 +257,20 @@ function GroupPage() {
                   />
                 </>
               ) : (
-                <Stack direction={"row"} spacing={1}>
-                  <Typography variant="h4">{groupName}</Typography>
+                <Stack
+                  border={"1px solid gray"}
+                  direction={"row"}
+                  padding={"0.6rem"}
+                  borderRadius={"10px"}
+                  spacing={1}
+                  textAlign={"center"}
+                >
+                  <Typography
+                    variant="h4"
+                    fontWeight={"600"}
+                  >
+                    {groupName}
+                  </Typography>
                   <IconBtn
                     title={"Edit"}
                     icon={<Edit />}
@@ -260,21 +282,23 @@ function GroupPage() {
             </Stack>
 
             <Typography
-              margin={"2rem"}
+              margin={"1rem"}
               alignSelf={"flex-start"}
-              variant="body1"
+              variant="h5"
+              fontWeight={"600"}
             >
-              Members
+              Members :
             </Typography>
             <Stack
               maxWidth={"45rem"}
               width={"100%"}
               boxSizing={"border-box"}
-              spacing={"2rem"}
-              height={"50vh"}
+              spacing={"1rem"}
+              maxHeight={"50vh"}
+              marginBottom={"25px"}
               overflow={"auto"}
               padding={{
-                xs: "0",
+                xs: "0.6rem",
                 sm: "1rem",
                 md: "1rem 4rem",
               }}
@@ -297,6 +321,7 @@ function GroupPage() {
             </Stack>
             <Stack
               spacing={"1rem"}
+              gap={"1rem"}
               direction={{
                 sm: "row",
               }}

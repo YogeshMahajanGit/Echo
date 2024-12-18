@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import userNotExist, { userExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
 import { SocketProvider } from "./socket";
+import "./style.css";
 
 // dynamic import(loads on demand)
 const Home = lazy(() => import("./pages/HomePage"));
