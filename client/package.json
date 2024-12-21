@@ -12,6 +12,16 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build",
+        "config": { "distDir": "dist" }
+      }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "/" }
+    ],  
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
